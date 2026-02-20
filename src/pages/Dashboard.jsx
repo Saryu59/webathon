@@ -206,7 +206,7 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                         {filteredIssues.map(issue => (
                             <div key={issue.id} className="glass-card" style={{ overflow: 'hidden' }}>
                                 {issue.image && (
-                                    <div style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', position: 'relative' }}>
+                                    <div style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', position: 'relative', overflow: 'hidden' }}>
                                         <img
                                             src={issue.image}
                                             alt={issue.description}
@@ -218,11 +218,11 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                             className="issue-image"
                                             onError={(e) => {
                                                 // Intelligent category-aware fallbacks
-                                                let fallback = 'https://images.unsplash.com/photo-1544191315-18456f918e95?w=800&q=80'; // Default Pothole
+                                                let fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80'; // Common Pothole
                                                 if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
-                                                    fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?w=800&q=80'; // Streetlight silhouette
+                                                    fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?auto=format&fit=crop&w=800&q=80'; // Streetlight OFF
                                                 } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
-                                                    fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&q=80'; // Garbage
+                                                    fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80'; // Garbage
                                                 }
 
                                                 if (e.target.src !== fallback) {
