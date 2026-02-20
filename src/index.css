@@ -134,3 +134,11 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
+
+.issue-image:hover {
+  transform: scale(1.05);
+}
+
+.issue-image {
+  border-radius: 12px 12px 0 0;
+}

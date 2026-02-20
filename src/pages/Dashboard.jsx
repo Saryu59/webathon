@@ -210,13 +210,17 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                         <img
                                             src={issue.image}
                                             alt={issue.description}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                            style={{
+                                                width: '100%', height: '100%',
+                                                objectFit: 'cover', display: 'block',
+                                                transition: 'transform 0.3s ease'
+                                            }}
+                                            className="issue-image"
                                             onError={(e) => {
-                                                // High-quality fallback for civic issues
+                                                // High-quality fallback if local file is missing
                                                 const fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=800&q=80';
                                                 if (e.target.src !== fallback) {
                                                     e.target.src = fallback;
-                                                    e.target.style.opacity = '0.7';
                                                 }
                                             }}
                                         />

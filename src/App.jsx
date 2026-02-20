@@ -19,7 +19,7 @@ function App() {
       id: 1,
       user: 'Ravi Kumar',
       image: '/pothole.jpg', // User's local pothole image
-      description: 'Deep pothole on Main Street bridge. High risk for vehicles, especially at night.',
+      description: 'Severe dry pothole on the city bridge. Crack patterns indicate structural strain on the road surface.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
       location: 'Main Street Bridge',
@@ -40,7 +40,7 @@ function App() {
       id: 2,
       user: 'Anita S.',
       image: '/streetlight.jpg', // User's local streetlight image
-      description: 'Single street light failure in Greenfield Sector 4. The entire stretch is dangerously dark.',
+      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
       time: '5 hours ago',
       postedDate: '20 Feb 2026',
       location: 'Sector 4, Greenfield',
