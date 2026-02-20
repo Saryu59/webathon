@@ -8,6 +8,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
     const [coordinates, setCoordinates] = useState(null);
     const [image, setImage] = useState(null);
     const [error, setError] = useState('');
+    const [isScanning, setIsScanning] = useState(false);
 
     const handleCaptureLocation = () => {
         if ("geolocation" in navigator) {
@@ -65,29 +66,46 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             return;
         }
 
-        const newIssue = {
-            id: Date.now(),
-            user: 'You',
-            description,
-            location: location === 'Fetching location...' ? (manualAddress || 'Unknown') : location,
-            address: manualAddress,
-            coordinates,
-            image: image,
-            time: 'Just now',
-            postedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-            verified: false,
-            likes: 0,
-            likedBy: [],
-            status: 'Pending'
-        };
-
-        onPost(newIssue);
-        onClose();
-        // Reset form
-        setDescription('');
-        setImage(null);
-        setManualAddress('');
+        // Simulate AI Image Verification
+        setIsScanning(true);
         setError('');
+
+        setTimeout(() => {
+            // Mock AI Logic: Ensure description has civic keywords
+            const civicKeywords = ['pothole', 'road', 'light', 'lamp', 'garbage', 'trash', 'waste', 'water', 'drain', 'broken', 'repair'];
+            const hasKeyword = civicKeywords.some(kw => description.toLowerCase().includes(kw));
+
+            if (!hasKeyword) {
+                setError('AI Verification Failed: The uploaded image does not appear to match a recognized civic issue category. Please provide a more detailed description or a clearer photo.');
+                setIsScanning(false);
+                return;
+            }
+
+            const newIssue = {
+                id: Date.now(),
+                user: 'You',
+                description,
+                location: location === 'Fetching location...' ? (manualAddress || 'Unknown') : location,
+                address: manualAddress,
+                coordinates,
+                image: image,
+                time: 'Just now',
+                postedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+                verified: false,
+                likes: 0,
+                likedBy: [],
+                status: 'Pending'
+            };
+
+            onPost(newIssue);
+            setIsScanning(false);
+            onClose();
+            // Reset form
+            setDescription('');
+            setImage(null);
+            setManualAddress('');
+            setError('');
+        }, 2000);
     };
 
     if (!isOpen) return null;
@@ -233,11 +251,31 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                         </button>
                     </div>
 
-                    <button type="submit" className="btn-primary" style={{
-                        width: '100%', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', gap: '8px', padding: '14px'
-                    }}>
-                        <Send size={18} /> Submit Issue
+                    <button
+                        type="submit"
+                        className="btn-primary"
+                        disabled={isScanning}
+                        style={{
+                            width: '100%', display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', gap: '8px', padding: '14px',
+                            opacity: isScanning ? 0.7 : 1,
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        {isScanning ? (
+                            <>
+                                <div className="scanning-line" style={{
+                                    position: 'absolute', top: 0, left: 0, width: '100%', height: '2px',
+                                    background: 'white', opacity: 0.5, animation: 'scan 1s infinite linear'
+                                }} />
+                                <Camera size={18} className="spin" /> Scanning Image...
+                            </>
+                        ) : (
+                            <>
+                                <Send size={18} /> Submit Issue
+                            </>
+                        )}
                     </button>
                 </form>
             </div>
