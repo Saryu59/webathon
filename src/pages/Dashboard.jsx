@@ -218,16 +218,18 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                             className="issue-image"
                                             onError={(e) => {
                                                 // Intelligent category-aware fallbacks
-                                                let fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=800&q=80'; // Common Pothole
-                                                if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
-                                                    fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?auto=format&fit=crop&w=800&q=80'; // Streetlight OFF
+                                                e.target.style.opacity = '0'; // Hide the broken image/alt text
+                                                let fallbackColor = 'linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%)';
+
+                                                if (issue.category === 'Pothole') {
+                                                    fallbackColor = 'linear-gradient(135deg, #455a64 0%, #263238 100%)'; // Asphalt look
+                                                } else if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
+                                                    fallbackColor = 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)'; // Night/Sky look
                                                 } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
-                                                    fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=800&q=80'; // Garbage
+                                                    fallbackColor = 'linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)'; // Green/Waste look
                                                 }
 
-                                                if (e.target.src !== fallback) {
-                                                    e.target.src = fallback;
-                                                }
+                                                e.target.parentElement.style.background = fallbackColor;
                                             }}
                                         />
                                         {/* Scanning Laser Overlay */}

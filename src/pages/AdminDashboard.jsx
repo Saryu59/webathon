@@ -139,16 +139,12 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 onError={(e) => {
                                                     // Intelligent category-aware fallbacks for Admin view
-                                                    let fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&w=200&q=80'; // Default Pothole
-                                                    if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
-                                                        fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?auto=format&fit=crop&w=200&q=80'; // Streetlight OFF
-                                                    } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
-                                                        fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=200&q=80'; // Garbage
-                                                    }
-
-                                                    if (e.target.src !== fallback) {
-                                                        e.target.src = fallback;
-                                                    }
+                                                    e.target.style.opacity = '0';
+                                                    let fallbackColor = '#f1f5f9';
+                                                    if (issue.category === 'Pothole') fallbackColor = '#455a64';
+                                                    else if (issue.category === 'Infrastructure') fallbackColor = '#1a237e';
+                                                    else if (issue.category === 'Waste') fallbackColor = '#2e7d32';
+                                                    e.target.parentElement.style.background = fallbackColor;
                                                 }}
                                             />
                                         </div>
