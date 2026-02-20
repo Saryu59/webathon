@@ -18,7 +18,7 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: '/pothole.jpg', // User's local pothole image
+      image: 'https://images.unsplash.com/photo-1584467541268-b026062eefb7?q=80&w=800', // Pothole - Reliable match
       description: 'Severe dry pothole on the city bridge. Crack patterns indicate structural strain on the road surface.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
@@ -39,7 +39,7 @@ function App() {
     {
       id: 2,
       user: 'Anita S.',
-      image: '/streetlight.jpg', // User's local streetlight image
+      image: 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?q=80&w=800', // Streetlight Silhouette - Reliable match
       description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
       time: '5 hours ago',
       postedDate: '20 Feb 2026',
