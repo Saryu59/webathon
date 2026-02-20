@@ -18,28 +18,29 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=800', // Pothole / Road work
-      description: 'Pot hole on Main Street near the central park entrance. Needs immediate attention.',
+      image: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?q=80&w=800', // Pothole with water
+      description: 'Deep pothole filled with water on Main Street bridge. High risk for vehicles, especially at night.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
-      location: 'Park Street, Downtown',
+      location: 'Main Street Bridge',
       coordinates: { lat: 12.9716, lng: 77.5946 },
       verified: true,
       likes: 24,
       likedBy: [],
       status: 'Verified',
-      address: 'Main Street, Central Park Area',
+      address: 'Near Central Bridge Entrance',
       acceptedBy: null,
       solvedBy: null,
       solvedDate: null,
       category: 'Pothole',
-      categoryIcon: '🚧'
+      categoryIcon: '🚧',
+      aiConfidence: 89
     },
     {
       id: 2,
       user: 'Anita S.',
-      image: 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?q=80&w=800', // Dark street light
-      description: 'Street light not working for a week. Residents finding it hard to walk at night.',
+      image: 'https://images.unsplash.com/photo-1607412322442-3bc99472b710?q=80&w=800', // Street light at dusk
+      description: 'Single street light failure in Greenfield Sector 4. The entire stretch is dangerously dark.',
       time: '5 hours ago',
       postedDate: '20 Feb 2026',
       location: 'Sector 4, Greenfield',
@@ -53,27 +54,29 @@ function App() {
       solvedBy: null,
       solvedDate: null,
       category: 'Infrastructure',
-      categoryIcon: '💡'
+      categoryIcon: '💡',
+      aiConfidence: 94
     },
     {
       id: 3,
       user: 'Vikram M.',
-      image: 'https://images.unsplash.com/photo-1621459548400-381b88d7294b?q=80&w=800', // Garbage cleanup
-      description: 'Garbage dump accumulation cleared after community report. Area is now clean.',
+      image: 'https://images.unsplash.com/photo-1605600611284-1b206963b572?q=80&w=800', // Garbage dump in city
+      description: 'Massive garbage accumulation blocking the road near metro buses. Sanitation sweep required.',
       time: '1 day ago',
       postedDate: '18 Feb 2026',
-      location: 'Metro Station North',
+      location: 'Metro Terminal West',
       coordinates: { lat: 12.9500, lng: 77.5800 },
       verified: true,
       likes: 56,
       likedBy: [],
       status: 'Solved',
-      address: 'Near Entry Gate 2, Metro Square',
+      address: 'Near Bus Depot 2',
       acceptedBy: 'Santhosh Kumar',
       solvedBy: 'Santhosh Kumar',
       solvedDate: '19 Feb 2026',
       category: 'Waste',
-      categoryIcon: '🗑️'
+      categoryIcon: '🗑️',
+      aiConfidence: 97
     }
   ]);
 
