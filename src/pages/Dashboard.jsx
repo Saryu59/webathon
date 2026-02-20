@@ -11,6 +11,8 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('active');
+    const [scanningId, setScanningId] = useState(null);
+    const [scanStep, setScanStep] = useState('');
 
     // Countdown timer — refreshes every second for Fixed issues
     const FIXED_TIMEOUT_MS = 2 * 60 * 1000;
@@ -67,6 +69,25 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
     const handleApproveFix = (id) => {
         handleToggleLike(id);
         alert('Community approval recorded! Admin will confirm the final solution.');
+    };
+
+    const handleScanIssue = (id) => {
+        setScanningId(id);
+        const steps = [
+            { label: 'Initializing Vision AI...', time: 400 },
+            { label: 'Syncing with Satellite Data...', time: 1000 },
+            { label: 'Running Object Detection...', time: 1600 },
+            { label: 'Finalizing AI Report...', time: 2200 }
+        ];
+
+        steps.forEach(step => {
+            setTimeout(() => setScanStep(step.label), step.time);
+        });
+
+        setTimeout(() => {
+            setScanningId(null);
+            setScanStep('');
+        }, 3000);
     };
 
     return (
@@ -185,13 +206,36 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                         {filteredIssues.map(issue => (
                             <div key={issue.id} className="glass-card" style={{ overflow: 'hidden' }}>
                                 {issue.image && (
-                                    <div style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                    <div style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', position: 'relative' }}>
                                         <img
                                             src={issue.image}
                                             alt={issue.description}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                                             onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerText = '📷 Image not available'; }}
                                         />
+                                        {/* Scanning Laser Overlay */}
+                                        {scanningId === issue.id && (
+                                            <div style={{
+                                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                                background: 'rgba(0, 172, 193, 0.2)',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                overflow: 'hidden'
+                                            }}>
+                                                <div style={{
+                                                    width: '100%', height: '2px', background: 'var(--accent)',
+                                                    boxShadow: '0 0 15px var(--accent)',
+                                                    position: 'absolute', top: 0,
+                                                    animation: 'scan 1.5s ease-in-out infinite'
+                                                }} />
+                                                <div style={{
+                                                    background: 'rgba(0,0,0,0.6)', color: 'white',
+                                                    padding: '8px 16px', borderRadius: '20px',
+                                                    fontSize: '0.75rem', fontWeight: 'bold', backdropFilter: 'blur(4px)'
+                                                }}>
+                                                    {scanStep}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 <div style={{ padding: '16px' }}>
@@ -284,9 +328,22 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                     {activeTab === 'active' && (
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <button onClick={() => handleToggleLike(issue.id)} style={{ background: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: (issue.likedBy || []).includes(currentUser) ? '#e53935' : 'var(--primary)', fontWeight: 'bold' }}>
-                                                    <ThumbsUp size={18} fill={(issue.likedBy || []).includes(currentUser) ? '#e53935' : 'none'} /> <span style={{ fontSize: '0.9rem' }}>{issue.likes}</span>
-                                                </button>
+                                                <div style={{ display: 'flex', gap: '12px' }}>
+                                                    <button onClick={() => handleToggleLike(issue.id)} style={{ background: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: (issue.likedBy || []).includes(currentUser) ? '#e53935' : 'var(--primary)', fontWeight: 'bold' }}>
+                                                        <ThumbsUp size={18} fill={(issue.likedBy || []).includes(currentUser) ? '#e53935' : 'none'} /> <span style={{ fontSize: '0.9rem' }}>{issue.likes}</span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleScanIssue(issue.id)}
+                                                        disabled={scanningId === issue.id}
+                                                        style={{
+                                                            background: 'none', display: 'flex', alignItems: 'center', gap: '6px',
+                                                            color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.9rem',
+                                                            opacity: scanningId === issue.id ? 0.6 : 1
+                                                        }}
+                                                    >
+                                                        <Globe2 size={18} /> {scanningId === issue.id ? 'Scanning...' : 'AI Report'}
+                                                    </button>
+                                                </div>
 
                                                 {issue.acceptedBy === 'You' ? (
                                                     <div style={{
@@ -305,10 +362,30 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                                             fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px'
                                                         }}
                                                     >
-                                                        <Handshake size={16} /> {issue.status === 'Fixed' ? 'Awaiting Confirmation' : 'Accept Task'}
+                                                        <Handshake size={16} /> {issue.status === 'Fixed' ? 'Reported Fixed' : 'Accept Task'}
                                                     </button>
                                                 )}
                                             </div>
+
+                                            {/* AI Insight Card */}
+                                            {issue.aiConfidence && (
+                                                <div style={{
+                                                    marginTop: '4px', padding: '10px', borderRadius: '10px',
+                                                    background: 'rgba(0, 172, 193, 0.04)',
+                                                    border: '1px dashed rgba(0, 172, 193, 0.3)',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                                }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                        <CheckCircle2 size={14} color="var(--accent)" />
+                                                        <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text)' }}>
+                                                            System Vision: {issue.category} Detected
+                                                        </span>
+                                                    </div>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--accent)' }}>
+                                                        {issue.aiConfidence}% match
+                                                    </span>
+                                                </div>
+                                            )}
 
                                             {issue.status === 'Fixed' && issue.acceptedBy !== 'You' && (
                                                 <button
