@@ -211,7 +211,14 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                             src={issue.image}
                                             alt={issue.description}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                                            onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerText = '📷 Image not available'; }}
+                                            onError={(e) => {
+                                                // High-quality fallback for civic issues
+                                                const fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=800&q=80';
+                                                if (e.target.src !== fallback) {
+                                                    e.target.src = fallback;
+                                                    e.target.style.opacity = '0.7';
+                                                }
+                                            }}
                                         />
                                         {/* Scanning Laser Overlay */}
                                         {scanningId === issue.id && (

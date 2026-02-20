@@ -18,8 +18,8 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=800', // Clear pothole/road image
-      description: 'Deep pothole filled with water on Main Street bridge. High risk for vehicles, especially at night.',
+      image: '/pothole.jpg', // User's local pothole image
+      description: 'Deep pothole on Main Street bridge. High risk for vehicles, especially at night.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
       location: 'Main Street Bridge',
@@ -39,7 +39,7 @@ function App() {
     {
       id: 2,
       user: 'Anita S.',
-      image: 'https://images.unsplash.com/photo-1507608158173-1dcec673a2e5?q=80&w=800', // High-fidelity streetlight at night
+      image: '/streetlight.jpg', // User's local streetlight image
       description: 'Single street light failure in Greenfield Sector 4. The entire stretch is dangerously dark.',
       time: '5 hours ago',
       postedDate: '20 Feb 2026',
@@ -60,7 +60,7 @@ function App() {
     {
       id: 3,
       user: 'Vikram M.',
-      image: 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?q=80&w=800', // Urban garbage
+      image: '/garbage.jpg', // User's local garbage image
       description: 'Massive garbage accumulation blocking the road near metro buses. Sanitation sweep required.',
       time: '1 day ago',
       postedDate: '18 Feb 2026',
