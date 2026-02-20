@@ -185,7 +185,14 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                         {filteredIssues.map(issue => (
                             <div key={issue.id} className="glass-card" style={{ overflow: 'hidden' }}>
                                 {issue.image && (
-                                    <img src={issue.image} alt="Issue" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
+                                    <div style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                        <img
+                                            src={issue.image}
+                                            alt={issue.description}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerText = '📷 Image not available'; }}
+                                        />
+                                    </div>
                                 )}
                                 <div style={{ padding: '16px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>

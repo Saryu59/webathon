@@ -132,7 +132,14 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                 }}>
                                     {/* Image */}
                                     {issue.image && (
-                                        <img src={issue.image} alt="" style={{ width: '64px', height: '64px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }} />
+                                        <div style={{ width: '64px', height: '64px', borderRadius: '10px', background: '#f1f5f9', overflow: 'hidden', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>
+                                            <img
+                                                src={issue.image}
+                                                alt=""
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerText = '📷'; }}
+                                            />
+                                        </div>
                                     )}
 
                                     {/* Info */}

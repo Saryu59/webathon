@@ -18,7 +18,7 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: 'https://images.unsplash.com/photo-1599423958983-0a78601639d6?q=80&w=600',
+      image: 'https://images.unsplash.com/photo-1584467541268-b040f83be3fd?q=80&w=800', // Pothole / Road work
       description: 'Pot hole on Main Street near the central park entrance. Needs immediate attention.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
@@ -38,7 +38,7 @@ function App() {
     {
       id: 2,
       user: 'Anita S.',
-      image: 'https://images.unsplash.com/photo-1518331326449-656f505da82c?q=80&w=600',
+      image: 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?q=80&w=800', // Dark street light
       description: 'Street light not working for a week. Residents finding it hard to walk at night.',
       time: '5 hours ago',
       postedDate: '20 Feb 2026',
@@ -58,7 +58,7 @@ function App() {
     {
       id: 3,
       user: 'Vikram M.',
-      image: 'https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?q=80&w=600',
+      image: 'https://images.unsplash.com/photo-1621459548400-381b88d7294b?q=80&w=800', // Garbage cleanup
       description: 'Garbage dump accumulation cleared after community report. Area is now clean.',
       time: '1 day ago',
       postedDate: '18 Feb 2026',
