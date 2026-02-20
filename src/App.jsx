@@ -1,0 +1,208 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import LandingPage from './pages/LandingPage';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
+import MyTasks from './pages/MyTasks';
+import AdminDashboard from './pages/AdminDashboard';
+import Rewards from './pages/Rewards';
+import Notifications from './pages/Notifications';
+
+// Time limit for Fixed status before auto-revert to Pending (2 minutes for demo)
+const FIXED_TIMEOUT_MS = 2 * 60 * 1000;
+
+function App() {
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user');
+
+  const [issues, setIssues] = useState([
+    {
+      id: 1,
+      user: 'Ravi Kumar',
+      image: 'https://images.unsplash.com/photo-1599423958983-0a78601639d6?q=80&w=600',
+      description: 'Pot hole on Main Street near the central park entrance. Needs immediate attention.',
+      time: '2 hours ago',
+      postedDate: '20 Feb 2026',
+      location: 'Park Street, Downtown',
+      coordinates: { lat: 12.9716, lng: 77.5946 },
+      verified: true,
+      likes: 24,
+      likedBy: [],
+      status: 'Verified',
+      address: 'Main Street, Central Park Area',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null
+    },
+    {
+      id: 2,
+      user: 'Anita S.',
+      image: 'https://images.unsplash.com/photo-1518331326449-656f505da82c?q=80&w=600',
+      description: 'Street light not working for a week. Residents finding it hard to walk at night.',
+      time: '5 hours ago',
+      postedDate: '20 Feb 2026',
+      location: 'Sector 4, Greenfield',
+      coordinates: { lat: 12.9800, lng: 77.6000 },
+      verified: false,
+      likes: 12,
+      likedBy: [],
+      status: 'Pending',
+      address: 'Lane 5, Greenfield Road',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null
+    },
+    {
+      id: 3,
+      user: 'Vikram M.',
+      image: 'https://images.unsplash.com/photo-1582234372722-50d7ccc30ebd?q=80&w=600',
+      description: 'Garbage dump accumulation cleared after community report. Area is now clean.',
+      time: '1 day ago',
+      postedDate: '18 Feb 2026',
+      location: 'Metro Station North',
+      coordinates: { lat: 12.9500, lng: 77.5800 },
+      verified: true,
+      likes: 56,
+      likedBy: [],
+      status: 'Solved',
+      address: 'Near Entry Gate 2, Metro Square',
+      acceptedBy: 'Santhosh Kumar',
+      solvedBy: 'Santhosh Kumar',
+      solvedDate: '19 Feb 2026'
+    }
+  ]);
+
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: 'Nearby Issue Alert',
+      message: 'A new issue has been posted within 4km of your location.',
+      time: '10 mins ago',
+      type: 'verify',
+      postId: 2,
+      unread: true
+    }
+  ]);
+
+  const [userStats, setUserStats] = useState({
+    fullName: 'Santhosh Kumar',
+    email: 'santhosh@civicflow.gov',
+    phone: '+91 98765 43210',
+    address: '123 Civic Lane, Downtown Metro',
+    photo: null,
+    points: 450,
+    rank: '#8',
+    streak: '5 Days',
+    postedCount: 12,
+    acceptedCount: 5,
+    solvedCount: 3,
+    history: [
+      { id: 101, action: 'Solved Drainage Issue', date: '20 Feb 2026', points: 150 },
+      { id: 102, action: 'Verified Street Light', date: '18 Feb 2026', points: 50 }
+    ],
+    badges: [
+      { id: 1, name: 'Civic Hero', tier: 'Gold' },
+      { id: 2, name: 'First Responder', tier: 'Silver' }
+    ]
+  });
+
+  const updateIssueStatus = (id, newStatus, extra = {}) => {
+    setIssues(prev => prev.map(issue => {
+      if (issue.id === id) {
+        const updated = { ...issue, status: newStatus, ...extra };
+
+        if (newStatus === 'In Progress') {
+          updated.acceptedAt = Date.now();
+          addNotification({
+            title: 'Task Accepted!',
+            message: `You accepted: ${issue.description.substring(0, 30)}... You have ${FIXED_TIMEOUT_MS / 60000} min to fix it.`,
+            type: 'update',
+            postId: id
+          });
+        }
+
+        if (newStatus === 'Fixed') {
+          updated.acceptedAt = null; // stop the timer
+          addNotification({
+            title: 'Fix Reported ✅',
+            message: 'Waiting for admin confirmation to mark as Solved.',
+            type: 'confirm',
+            postId: id
+          });
+        }
+
+        if (newStatus === 'Solved') {
+          updated.acceptedAt = null;
+          addNotification({
+            title: 'Issue Solved! 🏆',
+            message: `The community has confirmed the fix for: ${issue.description.substring(0, 30)}`,
+            type: 'confirm',
+            postId: id
+          });
+          if (updated.solvedBy === 'Santhosh Kumar' || updated.acceptedBy === 'You') {
+            setUserStats(prev => ({
+              ...prev,
+              points: prev.points + 150,
+              solvedCount: prev.solvedCount + 1,
+              history: [{ id: Date.now(), action: `Solved: ${issue.description.substring(0, 20)}...`, date: 'Today', points: 150 }, ...prev.history]
+            }));
+          }
+        }
+        return updated;
+      }
+      return issue;
+    }));
+  };
+
+  // Auto-revert "In Progress" issues to Pending if not fixed in time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIssues(prev => {
+        let changed = false;
+        const updated = prev.map(issue => {
+          if (issue.status === 'In Progress' && issue.acceptedAt && (Date.now() - issue.acceptedAt) > FIXED_TIMEOUT_MS) {
+            changed = true;
+            return { ...issue, status: 'Pending', acceptedBy: null, acceptedAt: null, verified: false };
+          }
+          return issue;
+        });
+        if (changed) {
+          setTimeout(() => {
+            addNotification({
+              title: 'Task Expired ⏳',
+              message: 'An accepted issue was not fixed in time and is now available for others to accept.',
+              type: 'update'
+            });
+          }, 0);
+        }
+        return changed ? updated : prev;
+      });
+    }, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const addNotification = (notif) => {
+    setNotifications(prev => [{
+      id: Date.now(),
+      time: 'Just now',
+      unread: true,
+      ...notif
+    }, ...prev]);
+  };
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard issues={issues} setIssues={setIssues} notifications={notifications} setNotifications={setNotifications} updateStatus={updateIssueStatus} />} />
+        <Route path="/tasks" element={<MyTasks tasks={issues.filter(i => i.acceptedBy === 'You')} updateStatus={updateIssueStatus} addNotification={addNotification} />} />
+        <Route path="/profile" element={<Profile user={userStats} setUser={setUserStats} />} />
+        <Route path="/rewards" element={<Rewards user={userStats} />} />
+        <Route path="/notifications" element={<Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} />} />
+        <Route path="/admin" element={<AdminDashboard issues={issues} setIssues={setIssues} addNotification={addNotification} />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;

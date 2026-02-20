@@ -1,0 +1,104 @@
+:root {
+  --primary: #004d40;
+  --primary-light: #4db6ac;
+  --secondary: #2e7d32;
+  --accent: #00acc1;
+  --background: #f1f8e9;
+  --surface: #ffffff;
+  --text: #263238;
+  --text-muted: #546e7a;
+  --border: #cfd8dc;
+  --verified: #43a047;
+  --not-verified: #e53935;
+  --in-progress: #fb8c00;
+  --solved: #1e88e5;
+  --glass: rgba(255, 255, 255, 0.7);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 121, 107, 0.2);
+}
+
+.btn-primary:hover {
+  background: #00695c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(0, 121, 107, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Full-window container */
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  background: var(--background);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
