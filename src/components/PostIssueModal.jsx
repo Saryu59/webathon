@@ -102,11 +102,11 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
         setTimeout(() => {
             // Comprehensive Civic Keyword Database (Infrastructure, Sanitation, Utilities, Public Safety)
             const categories = [
-                { name: 'Pothole', keywords: ['pothole', 'road', 'pavement', 'asphalt', 'crater', 'bump', 'uneven'] },
-                { name: 'Waste', keywords: ['garbage', 'trash', 'waste', 'dump', 'litter', 'bin', 'cleanup', 'filth'] },
-                { name: 'Infrastructure', keywords: ['light', 'lamp', 'power', 'pole', 'wire', 'sign', 'signal'] },
-                { name: 'Water', keywords: ['water', 'leak', 'leakage', 'pipe', 'drain', 'sewage', 'overflow'] },
-                { name: 'Safety', keywords: ['tree', 'branch', 'hazard', 'danger', 'fire', 'graffiti', 'stray'] }
+                { name: 'Pothole', keywords: ['pothole', 'road', 'pavement', 'asphalt', 'crater', 'bump', 'uneven', 'hole', 'repair'] },
+                { name: 'Waste', keywords: ['garbage', 'trash', 'waste', 'dump', 'litter', 'bin', 'cleanup', 'filth', 'smell', 'stench'] },
+                { name: 'Infrastructure', keywords: ['light', 'lamp', 'power', 'pole', 'wire', 'sign', 'signal', 'electricity', 'broken'] },
+                { name: 'Water', keywords: ['water', 'leak', 'leakage', 'pipe', 'drain', 'sewage', 'overflow', 'puddle', 'spill'] },
+                { name: 'Safety', keywords: ['tree', 'branch', 'hazard', 'danger', 'fire', 'graffiti', 'stray', 'fallen', 'obstruct', 'block'] }
             ];
 
             const descriptionLower = description.toLowerCase();
@@ -115,7 +115,19 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             );
 
             // Calculate a mock confidence score
-            let score = 50 + (matchingCategories.length > 0 ? 20 : 0) + (description.length > 30 ? 20 : 0);
+            let score = 45; // Base score
+
+            if (matchingCategories.length > 0) {
+                // High category relevance bonus
+                score += 35;
+
+                // Keyword density reward: +8 for each additional specific keyword in the category
+                const primaryCat = matchingCategories[0];
+                const matchedKws = primaryCat.keywords.filter(kw => descriptionLower.includes(kw));
+                score += (matchedKws.length - 1) * 8;
+            }
+
+            if (description.length > 30) score += 15;
 
             // Detect categorical conflicts (e.g., "water" and "tree" in same report)
             const hasConflict = matchingCategories.length > 1;
@@ -123,7 +135,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 score -= 40; // Heavy penalty for "mixed signals"
             }
 
-            score = Math.min(score, 98) - Math.floor(Math.random() * 5); // Add some "AI" randomness
+            score = Math.min(score, 98) - Math.floor(Math.random() * 3); // More stable score for high-quality reports
             setConfidence(score);
 
             if (description.trim().length < 15) {
