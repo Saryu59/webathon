@@ -71,10 +71,11 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
 
         const getCategory = (desc) => {
             const d = desc.toLowerCase();
-            if (d.includes('pothole') || d.includes('road') || d.includes('pavement')) return { name: 'Pothole', icon: '🚧' };
-            if (d.includes('garbage') || d.includes('trash') || d.includes('waste') || d.includes('dump')) return { name: 'Waste', icon: '🗑️' };
-            if (d.includes('light') || d.includes('lamp') || d.includes('electricity')) return { name: 'Infrastructure', icon: '💡' };
-            if (d.includes('water') || d.includes('leak') || d.includes('drain') || d.includes('sewage')) return { name: 'Water/Sanitation', icon: '💧' };
+            if (d.match(/pothole|road|pavement|sidewalk|street|lane|asphalt|concrete|tar|crack|crater|bump|uneven/)) return { name: 'Pothole', icon: '🚧' };
+            if (d.match(/garbage|trash|waste|dump|litter|bin|container|debris|cleanup|sweep|spill|smell|stench|dirt|filth|sanitation/)) return { name: 'Waste', icon: '🗑️' };
+            if (d.match(/light|lamp|electricity|power|pole|wire|cable|sign|signal|traffic|barricade|barrier|scaffolding|bridge|wall|fence/)) return { name: 'Infrastructure', icon: '💡' };
+            if (d.match(/water|leak|leakage|pipe|drain|sewage|manhole|overflow|flood|stagnation|puddle|tap|valve|hydrant|pump|gutter/)) return { name: 'Water/Sanitation', icon: '💧' };
+            if (d.match(/tree|branch|fire|hazard|danger|obstruction|graffiti|vandalism|stray|noise|smoke|dust|pollution|park|bench|playground/)) return { name: 'Safety/Public Space', icon: '🛡️' };
             return { name: 'General', icon: '📋' };
         };
 
@@ -99,12 +100,20 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
 
         setTimeout(() => {
             // Strict Logic: Ensure description is detailed and has keywords
-            const civicKeywords = ['pothole', 'road', 'light', 'lamp', 'garbage', 'trash', 'waste', 'water', 'drain', 'broken', 'repair', 'pavement', 'sidewalk', 'street'];
+            // Comprehensive Civic Keyword Database (Infrastructure, Sanitation, Utilities, Public Safety)
+            const civicKeywords = [
+                'pothole', 'road', 'pavement', 'sidewalk', 'street', 'lane', 'asphalt', 'concrete', 'tar', 'crack', 'crater', 'bump', 'uneven',
+                'garbage', 'trash', 'waste', 'dump', 'litter', 'bin', 'container', 'debris', 'cleanup', 'sweep', 'spill', 'smell', 'stench', 'dirt', 'filth', 'sanitation',
+                'light', 'lamp', 'electricity', 'power', 'pole', 'wire', 'cable', 'sign', 'signal', 'traffic', 'barricade', 'barrier', 'scaffolding', 'bridge', 'wall', 'fence',
+                'water', 'leak', 'leakage', 'pipe', 'drain', 'sewage', 'manhole', 'overflow', 'flood', 'stagnation', 'puddle', 'tap', 'valve', 'hydrant', 'pump', 'gutter',
+                'tree', 'branch', 'fire', 'hazard', 'danger', 'obstruction', 'graffiti', 'vandalism', 'stray', 'noise', 'smoke', 'dust', 'pollution', 'park', 'bench', 'playground',
+                'broken', 'repair', 'fix', 'maintain', 'hazard'
+            ];
             const descriptionLower = description.toLowerCase();
             const hasKeywords = civicKeywords.filter(kw => descriptionLower.includes(kw));
 
             // Calculate a mock confidence score
-            let score = 40 + (hasKeywords.length * 15) + (description.length > 25 ? 20 : 0);
+            let score = 50 + (hasKeywords.length * 15) + (description.length > 25 ? 20 : 0);
             score = Math.min(score, 98) - Math.floor(Math.random() * 5); // Add some "AI" randomness
             setConfidence(score);
 
