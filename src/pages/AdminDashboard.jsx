@@ -138,11 +138,10 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                                 alt=""
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 onError={(e) => {
-                                                    // High-reliability Admin fallback
+                                                    // Local Fallback for Admin
                                                     e.target.style.display = 'none';
-                                                    let fallbackColor = '#cfd8dc';
-                                                    if (issue.category === 'Pothole') fallbackColor = '#90a4ae';
-                                                    e.target.parentElement.style.background = fallbackColor;
+                                                    e.target.parentElement.style.background = '#cfd8dc';
+                                                    e.target.parentElement.innerText = '🚧';
                                                 }}
                                             />
                                         </div>

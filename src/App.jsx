@@ -18,7 +18,7 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80', // Robust Pothole Link
+      image: '/pothole.jpg', // Local User Image
       description: 'Severe puddle-filled pothole on the city bridge. Critical risk for commuters and vehicle alignment.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
@@ -35,6 +35,27 @@ function App() {
       category: 'Pothole',
       categoryIcon: '🚧',
       aiConfidence: 89
+    },
+    {
+      id: 2,
+      user: 'Anita S.',
+      image: '/streetlight.jfif', // User's specific local file
+      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
+      time: '5 hours ago',
+      postedDate: '20 Feb 2026',
+      location: 'Sector 4, Greenfield',
+      coordinates: { lat: 12.9800, lng: 77.6000 },
+      verified: false,
+      likes: 12,
+      likedBy: [],
+      status: 'Pending',
+      address: 'Lane 5, Greenfield Road',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null,
+      category: 'Infrastructure',
+      categoryIcon: '💡',
+      aiConfidence: 94
     }
   ]);
 
