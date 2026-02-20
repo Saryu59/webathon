@@ -166,321 +166,320 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                         </button>
                     </div>
                 </div>
-        </div>
-            </header >
+            </header>
 
-    <main style={{ padding: '24px 20px 80px', flex: 1 }}>
-        {/* Tab Selector */}
-        <div style={{
-            display: 'flex', background: 'var(--surface)',
-            borderRadius: '16px', padding: '6px', marginBottom: '24px',
-            boxShadow: 'var(--shadow)', border: '1px solid var(--border)'
-        }}>
-            <button
-                onClick={() => setActiveTab('active')}
-                style={{
-                    flex: 1, padding: '12px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: '700',
-                    background: activeTab === 'active' ? 'var(--primary)' : 'transparent',
-                    color: activeTab === 'active' ? 'white' : 'var(--text-muted)',
-                    transition: 'var(--transition)'
-                }}
-            >
-                Active Issues
-            </button>
-            <button
-                onClick={() => setActiveTab('solved')}
-                style={{
-                    flex: 1, padding: '12px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: '700',
-                    background: activeTab === 'solved' ? 'var(--primary)' : 'transparent',
-                    color: activeTab === 'solved' ? 'white' : 'var(--text-muted)',
-                    transition: 'var(--transition)'
-                }}
-            >
-                Solved
-            </button>
-        </div>
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <h3 style={{ fontSize: '1.1rem' }}>{activeTab === 'active' ? 'Community Feed' : 'Solved Issues'}</h3>
-            {activeTab === 'active' && (
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="btn-primary"
-                    style={{ padding: '10px 18px', borderRadius: '14px', fontSize: '0.85rem' }}
-                >
-                    <PlusCircle size={18} /> Post Issue
-                </button>
-            )}
-        </div>
-
-        {
-            filteredIssues.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
-                    <AlertCircle size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
-                    <p>No {activeTab} issues found.</p>
+            <main style={{ padding: '24px 20px 80px', flex: 1 }}>
+                {/* Tab Selector */}
+                <div style={{
+                    display: 'flex', background: 'var(--surface)',
+                    borderRadius: '16px', padding: '6px', marginBottom: '24px',
+                    boxShadow: 'var(--shadow)', border: '1px solid var(--border)'
+                }}>
+                    <button
+                        onClick={() => setActiveTab('active')}
+                        style={{
+                            flex: 1, padding: '12px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: '700',
+                            background: activeTab === 'active' ? 'var(--primary)' : 'transparent',
+                            color: activeTab === 'active' ? 'white' : 'var(--text-muted)',
+                            transition: 'var(--transition)'
+                        }}
+                    >
+                        Active Issues
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('solved')}
+                        style={{
+                            flex: 1, padding: '12px', borderRadius: '12px', fontSize: '0.9rem', fontWeight: '700',
+                            background: activeTab === 'solved' ? 'var(--primary)' : 'transparent',
+                            color: activeTab === 'solved' ? 'white' : 'var(--text-muted)',
+                            transition: 'var(--transition)'
+                        }}
+                    >
+                        Solved
+                    </button>
                 </div>
-            ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
-                    {filteredIssues.map(issue => (
-                        <div key={issue.id} className="glass-card" style={{ overflow: 'hidden', background: 'var(--surface)' }}>
-                            {issue.image && (
-                                <div
-                                    onClick={() => navigate(`/issue/${issue.id}`)}
-                                    style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
-                                >    <img
-                                        src={issue.image}
-                                        alt={issue.description}
-                                        style={{
-                                            width: '100%', height: '100%',
-                                            objectFit: 'cover', display: 'block',
-                                            transition: 'transform 0.3s ease'
-                                        }}
-                                        className="issue-image"
-                                        onError={(e) => {
-                                            // High-reliability image fallback
-                                            e.target.style.display = 'none'; // Completely hide the broken image element
 
-                                            // Lighter, professional placeholder background
-                                            let fallbackColor = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
-                                            let placeholderIcon = '📷';
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '1.1rem' }}>{activeTab === 'active' ? 'Community Feed' : 'Solved Issues'}</h3>
+                    {activeTab === 'active' && (
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="btn-primary"
+                            style={{ padding: '10px 18px', borderRadius: '14px', fontSize: '0.85rem' }}
+                        >
+                            <PlusCircle size={18} /> Post Issue
+                        </button>
+                    )}
+                </div>
 
-                                            if (issue.category === 'Pothole') {
-                                                fallbackColor = 'linear-gradient(135deg, #cfd8dc 0%, #90a4ae 100%)'; // Concrete look
-                                                placeholderIcon = '🚧';
-                                            }
+                {
+                    filteredIssues.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)' }}>
+                            <AlertCircle size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
+                            <p>No {activeTab} issues found.</p>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '20px' }}>
+                            {filteredIssues.map(issue => (
+                                <div key={issue.id} className="glass-card" style={{ overflow: 'hidden', background: 'var(--surface)' }}>
+                                    {issue.image && (
+                                        <div
+                                            onClick={() => navigate(`/issue/${issue.id}`)}
+                                            style={{ background: '#f0f4f8', height: '220px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem', position: 'relative', overflow: 'hidden', cursor: 'pointer' }}
+                                        >    <img
+                                                src={issue.image}
+                                                alt={issue.description}
+                                                style={{
+                                                    width: '100%', height: '100%',
+                                                    objectFit: 'cover', display: 'block',
+                                                    transition: 'transform 0.3s ease'
+                                                }}
+                                                className="issue-image"
+                                                onError={(e) => {
+                                                    // High-reliability image fallback
+                                                    e.target.style.display = 'none'; // Completely hide the broken image element
 
-                                            const parent = e.target.parentElement;
-                                            parent.style.background = fallbackColor;
+                                                    // Lighter, professional placeholder background
+                                                    let fallbackColor = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+                                                    let placeholderIcon = '📷';
 
-                                            // If text doesn't already exist, add a centered icon
-                                            if (!parent.querySelector('.img-placeholder')) {
-                                                const icon = document.createElement('div');
-                                                icon.className = 'img-placeholder';
-                                                icon.style.fontSize = '2rem';
-                                                icon.innerText = placeholderIcon;
-                                                parent.appendChild(icon);
-                                            }
-                                        }}
-                                    />
-                                    {/* Scanning Laser Overlay */}
-                                    {scanningId === issue.id && (
-                                        <div style={{
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                                            background: 'rgba(0, 172, 193, 0.2)',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            overflow: 'hidden'
-                                        }}>
-                                            <div style={{
-                                                width: '100%', height: '2px', background: 'var(--accent)',
-                                                boxShadow: '0 0 15px var(--accent)',
-                                                position: 'absolute', top: 0,
-                                                animation: 'scan 1.5s ease-in-out infinite'
-                                            }} />
-                                            <div style={{
-                                                background: 'rgba(0,0,0,0.6)', color: 'white',
-                                                padding: '8px 16px', borderRadius: '20px',
-                                                fontSize: '0.75rem', fontWeight: 'bold', backdropFilter: 'blur(4px)'
-                                            }}>
-                                                {scanStep}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                            <div style={{ padding: '16px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                    <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{issue.user}</span>
-                                    <span style={{
-                                        fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 10px', borderRadius: '12px',
-                                        background: issue.status === 'Solved' ? 'var(--solved)' :
-                                            issue.status === 'Fixed' ? 'var(--verified)' :
-                                                issue.status === 'Verified' ? '#43a047' :
-                                                    issue.status === 'In Progress' ? 'var(--in-progress)' : '#90a4ae',
-                                        color: 'white'
-                                    }}>
-                                        {issue.status}
-                                    </span>
-                                </div>
+                                                    if (issue.category === 'Pothole') {
+                                                        fallbackColor = 'linear-gradient(135deg, #cfd8dc 0%, #90a4ae 100%)'; // Concrete look
+                                                        placeholderIcon = '🚧';
+                                                    }
 
-                                {/* Countdown Timer for Accepted (In Progress) issues */}
-                                {issue.status === 'In Progress' && issue.acceptedAt && (() => {
-                                    const timer = getTimeRemaining(issue.acceptedAt);
-                                    if (!timer) return null;
-                                    return (
-                                        <div style={{
-                                            background: timer.percent < 25 ? 'rgba(229,57,53,0.08)' : 'rgba(251,140,0,0.08)',
-                                            border: `1px solid ${timer.percent < 25 ? 'rgba(229,57,53,0.2)' : 'rgba(251,140,0,0.2)'}`,
-                                            borderRadius: '12px', padding: '10px 14px', marginBottom: '12px',
-                                            display: 'flex', alignItems: 'center', gap: '10px'
-                                        }}>
-                                            <Clock size={16} color={timer.percent < 25 ? '#e53935' : '#fb8c00'} />
-                                            <div style={{ flex: 1 }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                                    <span style={{ fontSize: '0.75rem', fontWeight: '600', color: timer.percent < 25 ? '#e53935' : '#fb8c00' }}>
-                                                        Fix before {timer.mins}:{String(timer.secs).padStart(2, '0')}
-                                                    </span>
-                                                </div>
-                                                <div style={{ background: 'rgba(0,0,0,0.06)', borderRadius: '4px', height: '4px', overflow: 'hidden' }}>
-                                                    <div style={{
-                                                        width: `${timer.percent}%`, height: '100%',
-                                                        background: timer.percent < 25 ? '#e53935' : '#fb8c00',
-                                                        borderRadius: '4px', transition: 'width 1s linear'
-                                                    }} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
+                                                    const parent = e.target.parentElement;
+                                                    parent.style.background = fallbackColor;
 
-                                {issue.category && (
-                                    <div style={{
-                                        display: 'inline-flex', alignItems: 'center', gap: '6px',
-                                        background: 'rgba(0, 77, 64, 0.05)', color: 'var(--primary)',
-                                        padding: '4px 10px', borderRadius: '8px', marginBottom: '12px',
-                                        fontSize: '0.75rem', fontWeight: 'bold', border: '1px solid rgba(0, 77, 64, 0.1)'
-                                    }}>
-                                        <span>{issue.categoryIcon}</span>
-                                        <span>{issue.category.toUpperCase()}</span>
-                                    </div>
-                                )}
-
-                                <p style={{ fontSize: '0.95rem', marginBottom: '14px', fontWeight: '500', lineHeight: '1.5' }}>{issue.description}</p>
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                                        <MapPin size={14} color="var(--primary)" /> {issue.location}
-                                        {issue.status === 'Solved' && issue.address && <span> - {issue.address}</span>}
-                                    </div>
-                                    {issue.status !== 'Solved' && issue.address && (
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '20px' }}>{issue.address}</p>
-                                    )}
-                                    {issue.status !== 'Solved' && (
-                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '20px' }}>{issue.time}</p>
-                                    )}
-                                </div>
-
-                                {/* Solved metadata */}
-                                {issue.status === 'Solved' && (
-                                    <div style={{
-                                        background: 'rgba(30, 136, 229, 0.06)', padding: '12px',
-                                        borderRadius: '12px', marginBottom: '14px', border: '1px solid rgba(30, 136, 229, 0.12)'
-                                    }}>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.75rem' }}>
-                                            <p><span style={{ color: 'var(--text-muted)' }}>Posted:</span> {issue.postedDate || 'N/A'}</p>
-                                            <p><span style={{ color: 'var(--text-muted)' }}>Solved:</span> {issue.solvedDate || 'N/A'}</p>
-                                            <p style={{ gridColumn: 'span 2' }}><span style={{ color: 'var(--text-muted)' }}>Resolved by:</span> <strong>{issue.solvedBy}</strong></p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Action buttons for active tab */}
-                                {activeTab === 'active' && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '12px' }}>
-                                                <button onClick={() => handleToggleLike(issue.id)} style={{ background: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: (issue.likedBy || []).includes(currentUser) ? '#e53935' : 'var(--primary)', fontWeight: 'bold' }}>
-                                                    <ThumbsUp size={18} fill={(issue.likedBy || []).includes(currentUser) ? '#e53935' : 'none'} /> <span style={{ fontSize: '0.9rem' }}>{issue.likes}</span>
-                                                </button>
-                                                <button
-                                                    onClick={() => handleScanIssue(issue.id)}
-                                                    disabled={scanningId === issue.id}
-                                                    style={{
-                                                        background: 'none', display: 'flex', alignItems: 'center', gap: '6px',
-                                                        color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.9rem',
-                                                        opacity: scanningId === issue.id ? 0.6 : 1
-                                                    }}
-                                                >
-                                                    <Globe2 size={18} /> {scanningId === issue.id ? 'Scanning...' : 'AI Report'}
-                                                </button>
-                                            </div>
-
-                                            {issue.acceptedBy === 'You' ? (
+                                                    // If text doesn't already exist, add a centered icon
+                                                    if (!parent.querySelector('.img-placeholder')) {
+                                                        const icon = document.createElement('div');
+                                                        icon.className = 'img-placeholder';
+                                                        icon.style.fontSize = '2rem';
+                                                        icon.innerText = placeholderIcon;
+                                                        parent.appendChild(icon);
+                                                    }
+                                                }}
+                                            />
+                                            {/* Scanning Laser Overlay */}
+                                            {scanningId === issue.id && (
                                                 <div style={{
-                                                    background: issue.status === 'Fixed' ? 'var(--verified)' : 'var(--in-progress)',
-                                                    color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold'
+                                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                                    background: 'rgba(0, 172, 193, 0.2)',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    overflow: 'hidden'
                                                 }}>
-                                                    {issue.status === 'Fixed' ? 'Fix Reported' : 'In Progress'}
+                                                    <div style={{
+                                                        width: '100%', height: '2px', background: 'var(--accent)',
+                                                        boxShadow: '0 0 15px var(--accent)',
+                                                        position: 'absolute', top: 0,
+                                                        animation: 'scan 1.5s ease-in-out infinite'
+                                                    }} />
+                                                    <div style={{
+                                                        background: 'rgba(0,0,0,0.6)', color: 'white',
+                                                        padding: '8px 16px', borderRadius: '20px',
+                                                        fontSize: '0.75rem', fontWeight: 'bold', backdropFilter: 'blur(4px)'
+                                                    }}>
+                                                        {scanStep}
+                                                    </div>
                                                 </div>
-                                            ) : (
-                                                <button
-                                                    onClick={() => handleAccept(issue.id)}
-                                                    disabled={issue.status === 'Fixed'}
-                                                    style={{
-                                                        background: issue.status === 'Fixed' ? '#ccc' : 'var(--primary)',
-                                                        color: 'white', padding: '6px 16px', borderRadius: '20px',
-                                                        fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px'
-                                                    }}
-                                                >
-                                                    <Handshake size={16} /> {issue.status === 'Fixed' ? 'Reported Fixed' : 'Accept Task'}
-                                                </button>
+                                            )}
+                                        </div>
+                                    )}
+                                    <div style={{ padding: '16px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                                            <span style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>{issue.user}</span>
+                                            <span style={{
+                                                fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 10px', borderRadius: '12px',
+                                                background: issue.status === 'Solved' ? 'var(--solved)' :
+                                                    issue.status === 'Fixed' ? 'var(--verified)' :
+                                                        issue.status === 'Verified' ? '#43a047' :
+                                                            issue.status === 'In Progress' ? 'var(--in-progress)' : '#90a4ae',
+                                                color: 'white'
+                                            }}>
+                                                {issue.status}
+                                            </span>
+                                        </div>
+
+                                        {/* Countdown Timer for Accepted (In Progress) issues */}
+                                        {issue.status === 'In Progress' && issue.acceptedAt && (() => {
+                                            const timer = getTimeRemaining(issue.acceptedAt);
+                                            if (!timer) return null;
+                                            return (
+                                                <div style={{
+                                                    background: timer.percent < 25 ? 'rgba(229,57,53,0.08)' : 'rgba(251,140,0,0.08)',
+                                                    border: `1px solid ${timer.percent < 25 ? 'rgba(229,57,53,0.2)' : 'rgba(251,140,0,0.2)'}`,
+                                                    borderRadius: '12px', padding: '10px 14px', marginBottom: '12px',
+                                                    display: 'flex', alignItems: 'center', gap: '10px'
+                                                }}>
+                                                    <Clock size={16} color={timer.percent < 25 ? '#e53935' : '#fb8c00'} />
+                                                    <div style={{ flex: 1 }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                                            <span style={{ fontSize: '0.75rem', fontWeight: '600', color: timer.percent < 25 ? '#e53935' : '#fb8c00' }}>
+                                                                Fix before {timer.mins}:{String(timer.secs).padStart(2, '0')}
+                                                            </span>
+                                                        </div>
+                                                        <div style={{ background: 'rgba(0,0,0,0.06)', borderRadius: '4px', height: '4px', overflow: 'hidden' }}>
+                                                            <div style={{
+                                                                width: `${timer.percent}%`, height: '100%',
+                                                                background: timer.percent < 25 ? '#e53935' : '#fb8c00',
+                                                                borderRadius: '4px', transition: 'width 1s linear'
+                                                            }} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })()}
+
+                                        {issue.category && (
+                                            <div style={{
+                                                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                                background: 'rgba(0, 77, 64, 0.05)', color: 'var(--primary)',
+                                                padding: '4px 10px', borderRadius: '8px', marginBottom: '12px',
+                                                fontSize: '0.75rem', fontWeight: 'bold', border: '1px solid rgba(0, 77, 64, 0.1)'
+                                            }}>
+                                                <span>{issue.categoryIcon}</span>
+                                                <span>{issue.category.toUpperCase()}</span>
+                                            </div>
+                                        )}
+
+                                        <p style={{ fontSize: '0.95rem', marginBottom: '14px', fontWeight: '500', lineHeight: '1.5' }}>{issue.description}</p>
+
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                                <MapPin size={14} color="var(--primary)" /> {issue.location}
+                                                {issue.status === 'Solved' && issue.address && <span> - {issue.address}</span>}
+                                            </div>
+                                            {issue.status !== 'Solved' && issue.address && (
+                                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '20px' }}>{issue.address}</p>
+                                            )}
+                                            {issue.status !== 'Solved' && (
+                                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', paddingLeft: '20px' }}>{issue.time}</p>
                                             )}
                                         </div>
 
-                                        {/* AI Insight Card */}
-                                        {issue.aiConfidence && (
+                                        {/* Solved metadata */}
+                                        {issue.status === 'Solved' && (
                                             <div style={{
-                                                marginTop: '4px', padding: '10px', borderRadius: '10px',
-                                                background: 'rgba(0, 172, 193, 0.04)',
-                                                border: '1px dashed rgba(0, 172, 193, 0.3)',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                                background: 'rgba(30, 136, 229, 0.06)', padding: '12px',
+                                                borderRadius: '12px', marginBottom: '14px', border: '1px solid rgba(30, 136, 229, 0.12)'
                                             }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                    <CheckCircle2 size={14} color="var(--accent)" />
-                                                    <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text)' }}>
-                                                        System Vision: {issue.category} Detected
-                                                    </span>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.75rem' }}>
+                                                    <p><span style={{ color: 'var(--text-muted)' }}>Posted:</span> {issue.postedDate || 'N/A'}</p>
+                                                    <p><span style={{ color: 'var(--text-muted)' }}>Solved:</span> {issue.solvedDate || 'N/A'}</p>
+                                                    <p style={{ gridColumn: 'span 2' }}><span style={{ color: 'var(--text-muted)' }}>Resolved by:</span> <strong>{issue.solvedBy}</strong></p>
                                                 </div>
-                                                <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--accent)' }}>
-                                                    {issue.aiConfidence}% match
-                                                </span>
                                             </div>
                                         )}
 
-                                        {issue.status === 'Fixed' && issue.acceptedBy !== 'You' && (
-                                            <button
-                                                onClick={() => handleApproveFix(issue.id)}
-                                                style={{
-                                                    width: '100%', background: 'rgba(67, 160, 71, 0.1)',
-                                                    color: 'var(--verified)', padding: '10px', borderRadius: '12px',
-                                                    fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid var(--verified)',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                                }}
-                                            >
-                                                <CheckCircle2 size={18} /> Approve Fix (Community)
-                                            </button>
-                                        )}
+                                        {/* Action buttons for active tab */}
+                                        {activeTab === 'active' && (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                                        <button onClick={() => handleToggleLike(issue.id)} style={{ background: 'none', display: 'flex', alignItems: 'center', gap: '6px', color: (issue.likedBy || []).includes(currentUser) ? '#e53935' : 'var(--primary)', fontWeight: 'bold' }}>
+                                                            <ThumbsUp size={18} fill={(issue.likedBy || []).includes(currentUser) ? '#e53935' : 'none'} /> <span style={{ fontSize: '0.9rem' }}>{issue.likes}</span>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleScanIssue(issue.id)}
+                                                            disabled={scanningId === issue.id}
+                                                            style={{
+                                                                background: 'none', display: 'flex', alignItems: 'center', gap: '6px',
+                                                                color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.9rem',
+                                                                opacity: scanningId === issue.id ? 0.6 : 1
+                                                            }}
+                                                        >
+                                                            <Globe2 size={18} /> {scanningId === issue.id ? 'Scanning...' : 'AI Report'}
+                                                        </button>
+                                                    </div>
 
-                                        {issue.status === 'Pending' && !issue.verified && (
-                                            <button
-                                                onClick={() => handleVerify(issue.id)}
-                                                style={{
-                                                    width: '100%', background: 'rgba(0, 77, 64, 0.05)',
-                                                    color: 'var(--primary)', padding: '10px', borderRadius: '12px',
-                                                    fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid var(--primary)',
-                                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                                }}
-                                            >
-                                                <AlertCircle size={18} /> Verify this Issue (Nearby)
-                                            </button>
+                                                    {issue.acceptedBy === 'You' ? (
+                                                        <div style={{
+                                                            background: issue.status === 'Fixed' ? 'var(--verified)' : 'var(--in-progress)',
+                                                            color: 'white', padding: '6px 16px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold'
+                                                        }}>
+                                                            {issue.status === 'Fixed' ? 'Fix Reported' : 'In Progress'}
+                                                        </div>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() => handleAccept(issue.id)}
+                                                            disabled={issue.status === 'Fixed'}
+                                                            style={{
+                                                                background: issue.status === 'Fixed' ? '#ccc' : 'var(--primary)',
+                                                                color: 'white', padding: '6px 16px', borderRadius: '20px',
+                                                                fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px'
+                                                            }}
+                                                        >
+                                                            <Handshake size={16} /> {issue.status === 'Fixed' ? 'Reported Fixed' : 'Accept Task'}
+                                                        </button>
+                                                    )}
+                                                </div>
+
+                                                {/* AI Insight Card */}
+                                                {issue.aiConfidence && (
+                                                    <div style={{
+                                                        marginTop: '4px', padding: '10px', borderRadius: '10px',
+                                                        background: 'rgba(0, 172, 193, 0.04)',
+                                                        border: '1px dashed rgba(0, 172, 193, 0.3)',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                                    }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                            <CheckCircle2 size={14} color="var(--accent)" />
+                                                            <span style={{ fontSize: '0.75rem', fontWeight: '600', color: 'var(--text)' }}>
+                                                                System Vision: {issue.category} Detected
+                                                            </span>
+                                                        </div>
+                                                        <span style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--accent)' }}>
+                                                            {issue.aiConfidence}% match
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {issue.status === 'Fixed' && issue.acceptedBy !== 'You' && (
+                                                    <button
+                                                        onClick={() => handleApproveFix(issue.id)}
+                                                        style={{
+                                                            width: '100%', background: 'rgba(67, 160, 71, 0.1)',
+                                                            color: 'var(--verified)', padding: '10px', borderRadius: '12px',
+                                                            fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid var(--verified)',
+                                                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                                                        }}
+                                                    >
+                                                        <CheckCircle2 size={18} /> Approve Fix (Community)
+                                                    </button>
+                                                )}
+
+                                                {issue.status === 'Pending' && !issue.verified && (
+                                                    <button
+                                                        onClick={() => handleVerify(issue.id)}
+                                                        style={{
+                                                            width: '100%', background: 'rgba(0, 77, 64, 0.05)',
+                                                            color: 'var(--primary)', padding: '10px', borderRadius: '12px',
+                                                            fontSize: '0.85rem', fontWeight: 'bold', border: '1px solid var(--primary)',
+                                                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                                                        }}
+                                                    >
+                                                        <AlertCircle size={18} /> Verify this Issue (Nearby)
+                                                    </button>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
-                                )}
-                            </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            )
-        }
-    </main >
+                    )
+                }
+            </main>
 
-{/* Footer Navigation */ }
-    < footer style = {{
-    position: 'fixed', bottom: 0, left: 0, right: 0,
-        background: 'var(--surface)', padding: '12px 24px',
-            display: 'flex', justifyContent: 'space-around',
+            {/* Footer Navigation */}
+            <footer style={{
+                position: 'fixed', bottom: 0, left: 0, right: 0,
+                background: 'var(--surface)', padding: '12px 24px',
+                display: 'flex', justifyContent: 'space-around',
                 boxShadow: 'var(--shadow)',
-                    borderTop: '1px solid var(--border)', zIndex: 1000
-}}>
+                borderTop: '1px solid var(--border)', zIndex: 1000
+            }}>
                 <div onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--primary)' }}>
                     <Globe2 size={22} />
                     <span style={{ fontSize: '0.7rem', fontWeight: '600' }}>Feed</span>
@@ -508,15 +507,15 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                     <UserIcon size={22} />
                     <span style={{ fontSize: '0.7rem' }}>Profile</span>
                 </div>
-            </footer >
+            </footer>
 
-    <PostIssueModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onPost={handlePostIssue}
-        issues={issues}
-    />
-        </div >
+            <PostIssueModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onPost={handlePostIssue}
+                issues={issues}
+            />
+        </div>
     );
 };
 

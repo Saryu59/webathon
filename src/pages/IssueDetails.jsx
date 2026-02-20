@@ -2,11 +2,11 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft, MapPin, Clock, ThumbsUp, ShieldCheck,
-    AlertCircle, CheckCircle2, Globe2, Share2, MessageCircle
+    AlertCircle, CheckCircle2, Globe2, Share2, MessageCircle, Sun, Moon
 } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const IssueDetails = ({ issues, updateStatus }) => {
+const IssueDetails = ({ issues, updateStatus, theme, toggleTheme }) => {
     const { id } = useParams();
     const navigate = useNavigate();
     const issue = issues.find(i => i.id === parseInt(id));
@@ -74,6 +74,16 @@ const IssueDetails = ({ issues, updateStatus }) => {
                 </button>
                 <div style={{ flex: 1 }}>
                     <h2 style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>Issue Details</h2>
+                </div>
+                <div
+                    onClick={toggleTheme}
+                    style={{
+                        cursor: 'pointer', padding: '8px', background: 'var(--input-bg)',
+                        borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        border: '1px solid var(--border)', transition: 'var(--transition)', marginRight: '8px'
+                    }}
+                >
+                    {theme === 'light' ? <Moon size={18} color="var(--text-muted)" /> : <Sun size={18} color="#ffd700" />}
                 </div>
                 <Logo size={32} />
             </header>

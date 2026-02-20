@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClipboardList, MapPin, CheckCircle, Clock, ChevronRight, Globe2, Bell, Trophy, User } from 'lucide-react';
+import { ClipboardList, MapPin, CheckCircle, Clock, ChevronRight, Globe2, Bell, Trophy, User, Sun, Moon } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const MyTasks = ({ tasks, updateStatus, addNotification }) => {
+const MyTasks = ({ tasks, updateStatus, addNotification, theme, toggleTheme }) => {
     const navigate = useNavigate();
 
     // Countdown logic
@@ -36,7 +36,19 @@ const MyTasks = ({ tasks, updateStatus, addNotification }) => {
     return (
         <div className="container" style={{ padding: '24px 16px 80px 16px' }}>
             <div className="fade-in">
-                <h1 style={{ marginBottom: '8px' }}>My Tasks</h1>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <h1>My Tasks</h1>
+                    <div
+                        onClick={toggleTheme}
+                        style={{
+                            cursor: 'pointer', padding: '8px', background: 'var(--input-bg)',
+                            borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            border: '1px solid var(--border)', transition: 'var(--transition)'
+                        }}
+                    >
+                        {theme === 'light' ? <Moon size={18} color="var(--text-muted)" /> : <Sun size={18} color="#ffd700" />}
+                    </div>
+                </div>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Issues you've accepted and are resolving.</p>
 
                 {tasks.length === 0 ? (

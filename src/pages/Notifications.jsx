@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, CheckCircle, AlertTriangle, Info, MapPin, Globe2, Trophy, ClipboardList, User, Eye } from 'lucide-react';
+import { Bell, CheckCircle, AlertTriangle, Info, MapPin, Globe2, Trophy, ClipboardList, User, Eye, Sun, Moon } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const Notifications = ({ notifications, setNotifications, issues }) => {
+const Notifications = ({ notifications, setNotifications, issues, theme, toggleTheme }) => {
     const navigate = useNavigate();
 
     const markAsRead = (id) => {
@@ -32,14 +32,26 @@ const Notifications = ({ notifications, setNotifications, issues }) => {
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                     <h1 style={{ fontSize: '1.5rem' }}>Notifications</h1>
-                    {notifications.length > 0 && (
-                        <button
-                            onClick={markAllRead}
-                            style={{ background: 'none', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.85rem' }}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div
+                            onClick={toggleTheme}
+                            style={{
+                                cursor: 'pointer', padding: '8px', background: 'var(--input-bg)',
+                                borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                border: '1px solid var(--border)', transition: 'var(--transition)'
+                            }}
                         >
-                            Mark all read
-                        </button>
-                    )}
+                            {theme === 'light' ? <Moon size={18} color="var(--text-muted)" /> : <Sun size={18} color="#ffd700" />}
+                        </div>
+                        {notifications.length > 0 && (
+                            <button
+                                onClick={markAllRead}
+                                style={{ background: 'none', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.85rem' }}
+                            >
+                                Mark all read
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Nearby Issues Section */}

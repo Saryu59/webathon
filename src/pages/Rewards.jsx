@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Trophy, Award, Star, History, ChevronRight, Globe2, Bell, ClipboardList, User, Users, TrendingUp } from 'lucide-react';
+import { Trophy, Award, Star, History, ChevronRight, Globe2, Bell, ClipboardList, User, Users, TrendingUp, Sun, Moon } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const Rewards = ({ user }) => {
+const Rewards = ({ user, theme, toggleTheme }) => {
     const navigate = useNavigate();
 
     const leaderboard = [
@@ -16,6 +16,19 @@ const Rewards = ({ user }) => {
     return (
         <div className="container" style={{ padding: '24px 20px 80px' }}>
             <div className="fade-in">
+                {/* Theme Toggle */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+                    <div
+                        onClick={toggleTheme}
+                        style={{
+                            cursor: 'pointer', padding: '8px', background: 'var(--input-bg)',
+                            borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            border: '1px solid var(--border)', transition: 'var(--transition)'
+                        }}
+                    >
+                        {theme === 'light' ? <Moon size={18} color="var(--text-muted)" /> : <Sun size={18} color="#ffd700" />}
+                    </div>
+                </div>
                 <div style={{
                     background: 'linear-gradient(135deg, var(--primary) 0%, #00695c 100%)',
                     borderRadius: '24px', padding: '32px 24px', color: 'white', textAlign: 'center',

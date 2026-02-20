@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, User, ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
+import { LogIn, User, ShieldCheck, Mail, Lock, ArrowRight, UserPlus } from 'lucide-react';
 
 const LoginPage = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -231,9 +231,35 @@ const LoginPage = ({ onLogin }) => {
                 </form>
 
                 <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                    <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
-                        Don't have an account? <Link to="/register" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600' }}>Register here</Link>
+                    <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)', marginBottom: '16px' }}>
+                        Don't have an account?
                     </p>
+                    <Link to="/register" style={{ textDecoration: 'none' }}>
+                        <button
+                            type="button"
+                            style={{
+                                width: '100%', padding: '14px', borderRadius: '12px',
+                                border: '2px solid var(--accent)', background: 'rgba(0, 172, 193, 0.08)',
+                                color: 'var(--accent)', fontWeight: '700', fontSize: '1rem',
+                                cursor: 'pointer', display: 'flex', alignItems: 'center',
+                                justifyContent: 'center', gap: '10px', transition: 'all 0.3s',
+                                backdropFilter: 'blur(10px)'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.background = 'var(--accent)';
+                                e.currentTarget.style.color = 'white';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.background = 'rgba(0, 172, 193, 0.08)';
+                                e.currentTarget.style.color = 'var(--accent)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                            }}
+                        >
+                            <UserPlus size={18} />
+                            <span>Create New Account</span>
+                        </button>
+                    </Link>
                 </div>
             </div>
         </div>

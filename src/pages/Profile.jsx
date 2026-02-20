@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User as UserIcon, Mail, Phone, MapPin, Send, Layout, CheckCircle, Globe2, Bell, Trophy, ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, X, Camera } from 'lucide-react';
+import { User as UserIcon, Mail, Phone, MapPin, Send, Layout, CheckCircle, Globe2, Bell, Trophy, ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, X, Camera, Sun, Moon } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const Profile = ({ user, setUser, onLogout }) => {
+const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
     const navigate = useNavigate();
     const [showSettings, setShowSettings] = useState(false);
     const [editForm, setEditForm] = useState({
@@ -37,9 +37,14 @@ const Profile = ({ user, setUser, onLogout }) => {
                             <ChevronLeft size={20} /> Back
                         </button>
                         <h2 style={{ color: 'white', fontSize: '1.2rem' }}>My Profile</h2>
-                        <button onClick={() => setShowSettings(true)} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
-                            <Settings size={18} />
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button onClick={toggleTheme} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
+                                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} color="#ffd700" />}
+                            </button>
+                            <button onClick={() => setShowSettings(true)} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
+                                <Settings size={18} />
+                            </button>
+                        </div>
                     </div>
                 </div>
 

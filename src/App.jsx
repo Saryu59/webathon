@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -71,6 +71,44 @@ function App() {
     setIsAuthenticated(false);
     localStorage.removeItem('userRole');
   };
+
+  // --- BroadcastChannel for real-time cross-tab sync ---
+  const channelRef = useRef(null);
+  const ignoreNextBroadcast = useRef(false);
+
+  useEffect(() => {
+    const channel = new BroadcastChannel('civicflow_sync');
+    channelRef.current = channel;
+
+    channel.onmessage = (event) => {
+      const { type, payload } = event.data;
+      if (type === 'ISSUES_UPDATE') {
+        ignoreNextBroadcast.current = true;
+        setIssues(payload);
+      }
+      if (type === 'NOTIFICATION') {
+        setNotifications(prev => [{
+          id: Date.now(),
+          time: 'Just now',
+          unread: true,
+          ...payload
+        }, ...prev]);
+      }
+    };
+
+    return () => channel.close();
+  }, []);
+
+  // Broadcast issues whenever they change (skip if update came from another tab)
+  useEffect(() => {
+    if (ignoreNextBroadcast.current) {
+      ignoreNextBroadcast.current = false;
+      return;
+    }
+    if (channelRef.current) {
+      channelRef.current.postMessage({ type: 'ISSUES_UPDATE', payload: issues });
+    }
+  }, [issues]);
   const [issues, setIssues] = useState([
     {
       id: 1,
@@ -269,27 +307,27 @@ function App() {
         } />
         <Route path="/tasks" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <MyTasks tasks={issues.filter(i => i.acceptedBy === 'You')} updateStatus={updateIssueStatus} addNotification={addNotification} />
+            <MyTasks tasks={issues.filter(i => i.acceptedBy === 'You')} updateStatus={updateIssueStatus} addNotification={addNotification} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
         <Route path="/profile" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Profile user={fullUserStats} setUser={setUserStats} onLogout={handleLogout} />
+            <Profile user={fullUserStats} setUser={setUserStats} onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
         <Route path="/rewards" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Rewards user={fullUserStats} />
+            <Rewards user={fullUserStats} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
         <Route path="/notifications" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} />
+            <Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
         <Route path="/issue/:id" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <IssueDetails issues={issues} updateStatus={updateIssueStatus} />
+            <IssueDetails issues={issues} updateStatus={updateIssueStatus} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
 
