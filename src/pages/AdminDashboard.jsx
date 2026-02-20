@@ -241,6 +241,72 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                         )}
                     </div>
                 </div>
+
+                {/* Worker Directory Section */}
+                <div style={{ background: 'white', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', overflow: 'hidden', padding: '24px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', borderBottom: '1px solid #edf2f7', paddingBottom: '16px' }}>
+                        <Users size={24} color="var(--primary)" />
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Field Force Personnel Directory</h3>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+                        {[
+                            {
+                                category: 'Sanitation & Waste',
+                                workers: [
+                                    { name: 'John Smith', role: 'Team Lead', specialty: 'Waste Management', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150', status: 'Active' },
+                                    { name: 'Sarah Chen', role: 'Technician', specialty: 'Recycling Ops', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150', status: 'On Leave' }
+                                ]
+                            },
+                            {
+                                category: 'Electrification',
+                                workers: [
+                                    { name: 'Mike Ross', role: 'Senior Engineer', specialty: 'Grid Maintenance', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150', status: 'Active' },
+                                    { name: 'Linda Wu', role: 'Specialist', specialty: 'Street Lighting', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150', status: 'On Duty' }
+                                ]
+                            },
+                            {
+                                category: 'Road Maintenance',
+                                workers: [
+                                    { name: 'David Miller', role: 'Foreman', specialty: 'Asphalt Paving', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150', status: 'Active' },
+                                    { name: 'Emma Wilson', role: 'Inspector', specialty: 'Structural Integrity', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150', status: 'On Duty' }
+                                ]
+                            },
+                            {
+                                category: 'Water & Sewage',
+                                workers: [
+                                    { name: 'Robert King', role: 'Plumbing Expert', specialty: 'Pipe Networks', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150', status: 'Active' },
+                                    { name: 'Karen Lee', role: 'Drainage Tech', specialty: 'Stormwater Management', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150', status: 'On Duty' }
+                                ]
+                            }
+                        ].map((cat, idx) => (
+                            <div key={idx} style={{ background: '#f8fafc', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                <h4 style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 'bold', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    {cat.category}
+                                </h4>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {cat.workers.map((worker, wIdx) => (
+                                        <div key={wIdx} style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingBottom: wIdx !== cat.workers.length - 1 ? '12px' : 0, borderBottom: wIdx !== cat.workers.length - 1 ? '1px solid #e2e8f0' : 'none' }}>
+                                            <img src={worker.photo} alt={worker.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+                                            <div style={{ flex: 1 }}>
+                                                <p style={{ fontSize: '0.85rem', fontWeight: 'bold', margin: 0 }}>{worker.name}</p>
+                                                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>{worker.role} • {worker.specialty}</p>
+                                            </div>
+                                            <span style={{
+                                                fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px',
+                                                background: worker.status === 'Active' ? '#e6fffa' : worker.status === 'On Duty' ? '#ebf8ff' : '#fff5f5',
+                                                color: worker.status === 'Active' ? '#319795' : worker.status === 'On Duty' ? '#3182ce' : '#e53935',
+                                                fontWeight: 'bold', border: `1px solid ${worker.status === 'Active' ? '#b2f5ea' : worker.status === 'On Duty' ? '#bee3f8' : '#feb2b2'}`
+                                            }}>
+                                                {worker.status}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
