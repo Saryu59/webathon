@@ -9,7 +9,7 @@ const Rewards = ({ user }) => {
     const leaderboard = [
         { id: 1, name: 'Amit S.', points: 1250, rank: 1, avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100' },
         { id: 2, name: 'Priya K.', points: 1100, rank: 2, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100' },
-        { id: 3, name: 'Santhosh K.', points: 450, rank: 8, avatar: null }, // You
+        { id: 3, name: 'Santhosh K.', points: user.points, rank: 8, avatar: null }, // You
         { id: 4, name: 'Rahul R.', points: 420, rank: 9, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100' }
     ];
 
@@ -53,7 +53,7 @@ const Rewards = ({ user }) => {
                         {user.badges.map(badge => (
                             <div key={badge.id} className="glass-card" style={{
                                 padding: '20px 16px', minWidth: '130px', textAlign: 'center',
-                                border: '1px solid rgba(255,255,255,0.8)', background: 'white'
+                                border: '1px solid var(--border)', background: 'var(--surface)'
                             }}>
                                 <div style={{
                                     width: '50px', height: '50px', borderRadius: '50%',
@@ -79,12 +79,12 @@ const Rewards = ({ user }) => {
 
                 <section style={{ marginBottom: '32px' }}>
                     <h3 style={{ fontSize: '1.1rem', marginBottom: '16px' }}>Leaderboard</h3>
-                    <div className="glass-card" style={{ background: 'white', padding: '8px' }}>
+                    <div className="glass-card" style={{ background: 'var(--surface)', padding: '8px' }}>
                         {leaderboard.map((player, idx) => (
                             <div key={player.id} style={{
                                 display: 'flex', alignItems: 'center', padding: '12px',
-                                borderBottom: idx === leaderboard.length - 1 ? 'none' : '1px solid #f1f5f9',
-                                background: player.name === 'Santhosh K.' ? 'rgba(0, 77, 64, 0.05)' : 'transparent',
+                                borderBottom: idx === leaderboard.length - 1 ? 'none' : '1px solid var(--border)',
+                                background: player.name === 'Santhosh K.' ? 'var(--input-bg)' : 'transparent',
                                 borderRadius: player.name === 'Santhosh K.' ? '12px' : '0'
                             }}>
                                 <span style={{ width: '24px', fontWeight: 'bold', fontSize: '0.9rem', color: idx < 3 ? 'var(--primary)' : 'var(--text-muted)' }}>{player.rank}</span>
@@ -105,7 +105,7 @@ const Rewards = ({ user }) => {
                     <h3 style={{ fontSize: '1.1rem', marginBottom: '16px' }}>Point History</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {user.history.map(item => (
-                            <div key={item.id} className="glass-card" style={{ background: 'white', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div key={item.id} className="glass-card" style={{ background: 'var(--surface)', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                                     <div style={{ padding: '10px', background: 'rgba(0, 77, 64, 0.08)', borderRadius: '12px' }}>
                                         <History size={18} color="var(--primary)" />
@@ -124,9 +124,9 @@ const Rewards = ({ user }) => {
 
             <footer style={{
                 position: 'fixed', bottom: 0, left: 0, right: 0,
-                background: 'white', padding: '12px 24px',
+                background: 'var(--surface)', padding: '12px 24px',
                 display: 'flex', justifyContent: 'space-around',
-                boxShadow: '0 -2px 10px rgba(0,0,0,0.05)',
+                boxShadow: 'var(--shadow)',
                 borderTop: '1px solid var(--border)', zIndex: 100
             }}>
                 <div onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>

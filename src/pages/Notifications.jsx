@@ -57,9 +57,9 @@ const Notifications = ({ notifications, setNotifications, issues }) => {
                                 <div
                                     key={issue.id}
                                     className="glass-card"
-                                    onClick={() => navigate('/dashboard')}
+                                    onClick={() => navigate(`/issue/${issue.id}`)}
                                     style={{
-                                        padding: '14px 16px', cursor: 'pointer', background: 'white',
+                                        padding: '14px 16px', cursor: 'pointer', background: 'var(--surface)',
                                         display: 'flex', gap: '14px', alignItems: 'center'
                                     }}
                                 >
@@ -102,12 +102,12 @@ const Notifications = ({ notifications, setNotifications, issues }) => {
                                     key={notif.id}
                                     onClick={() => {
                                         markAsRead(notif.id);
-                                        if (notif.postId) navigate('/dashboard');
+                                        if (notif.postId) navigate(`/issue/${notif.postId}`);
                                     }}
                                     className="glass-card"
                                     style={{
                                         padding: '14px 16px', cursor: 'pointer',
-                                        background: notif.unread ? 'rgba(0, 77, 64, 0.04)' : 'white',
+                                        background: notif.unread ? 'rgba(0, 172, 193, 0.08)' : 'var(--surface)',
                                         borderLeft: notif.unread ? '3px solid var(--primary)' : '3px solid transparent',
                                         display: 'flex', gap: '14px', alignItems: 'flex-start'
                                     }}
@@ -135,9 +135,9 @@ const Notifications = ({ notifications, setNotifications, issues }) => {
             {/* Footer */}
             <footer style={{
                 position: 'fixed', bottom: 0, left: 0, right: 0,
-                background: 'white', padding: '12px 24px',
+                background: 'var(--surface)', padding: '12px 24px',
                 display: 'flex', justifyContent: 'space-around',
-                boxShadow: '0 -2px 10px rgba(0,0,0,0.05)',
+                boxShadow: 'var(--shadow)',
                 borderTop: '1px solid var(--border)', zIndex: 100
             }}>
                 <div onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>

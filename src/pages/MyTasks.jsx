@@ -40,7 +40,7 @@ const MyTasks = ({ tasks, updateStatus, addNotification }) => {
                 <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Issues you've accepted and are resolving.</p>
 
                 {tasks.length === 0 ? (
-                    <div className="glass-card" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                    <div className="glass-card" style={{ padding: '40px', textAlign: 'center', background: 'var(--surface)', color: 'var(--text-muted)' }}>
                         <ClipboardList size={48} style={{ opacity: 0.2, marginBottom: '16px' }} />
                         <p>You haven't accepted any tasks yet.</p>
                         <button
@@ -53,7 +53,7 @@ const MyTasks = ({ tasks, updateStatus, addNotification }) => {
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {tasks.map(task => (
-                            <div key={task.id} className="glass-card" style={{ padding: '16px' }}>
+                            <div key={task.id} className="glass-card" style={{ padding: '16px', background: 'var(--surface)' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                     <span style={{
                                         fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '12px',
@@ -137,9 +137,9 @@ const MyTasks = ({ tasks, updateStatus, addNotification }) => {
             {/* Footer Navigation */}
             <footer style={{
                 position: 'fixed', bottom: 0, left: 0, right: 0,
-                background: 'white', padding: '12px 24px',
+                background: 'var(--surface)', padding: '12px 24px',
                 display: 'flex', justifyContent: 'space-around',
-                boxShadow: '0 -2px 10px rgba(0,0,0,0.05)',
+                boxShadow: 'var(--shadow)',
                 borderTop: '1px solid var(--border)', zIndex: 100
             }}>
                 <div onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>

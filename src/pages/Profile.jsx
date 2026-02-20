@@ -46,8 +46,8 @@ const Profile = ({ user, setUser, onLogout }) => {
                 {/* Profile Card */}
                 <div style={{ marginTop: '-60px', padding: '0 20px' }}>
                     <div className="glass-card" style={{
-                        background: 'white', padding: '24px', borderRadius: '24px',
-                        textAlign: 'center', boxShadow: '0 10px 25px rgba(0,0,0,0.05)'
+                        background: 'var(--surface)', padding: '24px', borderRadius: '24px',
+                        textAlign: 'center', boxShadow: 'var(--shadow)'
                     }}>
                         <div style={{ position: 'relative', width: '100px', height: '100px', margin: '0 auto 16px' }}>
                             <div style={{
@@ -76,17 +76,17 @@ const Profile = ({ user, setUser, onLogout }) => {
                 <div style={{ padding: '24px 20px' }}>
                     <h3 style={{ fontSize: '1rem', marginBottom: '16px' }}>Impact Overview</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                        <div className="glass-card" style={{ background: 'white', padding: '16px 8px', textAlign: 'center' }}>
+                        <div className="glass-card" style={{ background: 'var(--surface)', padding: '16px 8px', textAlign: 'center' }}>
                             <Send size={20} color="var(--primary)" style={{ marginBottom: '8px' }} />
                             <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{user.postedCount}</p>
                             <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '600' }}>Posted</p>
                         </div>
-                        <div className="glass-card" style={{ background: 'white', padding: '16px 8px', textAlign: 'center' }}>
+                        <div className="glass-card" style={{ background: 'var(--surface)', padding: '16px 8px', textAlign: 'center' }}>
                             <Layout size={20} color="#fb8c00" style={{ marginBottom: '8px' }} />
                             <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{user.acceptedCount}</p>
                             <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '600' }}>In Progress</p>
                         </div>
-                        <div className="glass-card" style={{ background: 'white', padding: '16px 8px', textAlign: 'center' }}>
+                        <div className="glass-card" style={{ background: 'var(--surface)', padding: '16px 8px', textAlign: 'center' }}>
                             <CheckCircle size={20} color="var(--verified)" style={{ marginBottom: '8px' }} />
                             <p style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{user.solvedCount}</p>
                             <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '600' }}>Solved</p>
@@ -97,23 +97,23 @@ const Profile = ({ user, setUser, onLogout }) => {
                 {/* Contact */}
                 <div style={{ padding: '0 20px' }}>
                     <h3 style={{ fontSize: '1rem', marginBottom: '16px' }}>Contact Details</h3>
-                    <div className="glass-card" style={{ background: 'white', padding: '4px', borderRadius: '20px' }}>
-                        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-                            <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '12px' }}><Mail size={18} color="var(--primary)" /></div>
+                    <div className="glass-card" style={{ background: 'var(--surface)', padding: '4px', borderRadius: '20px' }}>
+                        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ background: 'var(--input-bg)', padding: '10px', borderRadius: '12px' }}><Mail size={18} color="var(--primary)" /></div>
                             <div style={{ flex: 1 }}>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Email</p>
                                 <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.email}</p>
                             </div>
                         </div>
-                        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid #f1f5f9' }}>
-                            <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '12px' }}><Phone size={18} color="var(--primary)" /></div>
+                        <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ background: 'var(--input-bg)', padding: '10px', borderRadius: '12px' }}><Phone size={18} color="var(--primary)" /></div>
                             <div style={{ flex: 1 }}>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Phone</p>
-                                <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.phone}</p>
+                                <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.email}</p>
                             </div>
                         </div>
                         <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                            <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '12px' }}><MapPin size={18} color="var(--primary)" /></div>
+                            <div style={{ background: 'var(--input-bg)', padding: '10px', borderRadius: '12px' }}><MapPin size={18} color="var(--primary)" /></div>
                             <div style={{ flex: 1 }}>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Address</p>
                                 <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.address}</p>
@@ -144,8 +144,8 @@ const Profile = ({ user, setUser, onLogout }) => {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
                 }}>
                     <div style={{
-                        background: 'white', borderRadius: '24px', padding: '28px', width: '100%', maxWidth: '480px',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
+                        background: 'var(--surface)', borderRadius: '24px', padding: '28px', width: '100%', maxWidth: '480px',
+                        boxShadow: '0 20px 60px rgba(0,0,0,0.3)', color: 'var(--text)'
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                             <h2 style={{ fontSize: '1.2rem' }}>Edit Profile</h2>
@@ -214,9 +214,9 @@ const Profile = ({ user, setUser, onLogout }) => {
             {/* Footer */}
             <footer style={{
                 position: 'fixed', bottom: 0, left: 0, right: 0,
-                background: 'white', padding: '12px 24px',
+                background: 'var(--surface)', padding: '12px 24px',
                 display: 'flex', justifyContent: 'space-around',
-                boxShadow: '0 -2px 10px rgba(0,0,0,0.05)',
+                boxShadow: 'var(--shadow)',
                 borderTop: '1px solid var(--border)', zIndex: 100
             }}>
                 <div onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', color: 'var(--text-muted)' }}>

@@ -8,6 +8,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Rewards from './pages/Rewards';
 import Notifications from './pages/Notifications';
 import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import IssueDetails from './pages/IssueDetails';
+import OnboardingPage from './pages/OnboardingPage';
 
 // Time limit for Fixed status before auto-revert to Pending (2 minutes for demo)
 const FIXED_TIMEOUT_MS = 2 * 60 * 1000;
@@ -27,11 +30,40 @@ const AdminRoute = ({ children, isAuthenticated, role }) => {
 function App() {
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('userRole'));
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
-  const handleLogin = (role) => {
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLogin = (role, userData) => {
     setUserRole(role);
     setIsAuthenticated(true);
     localStorage.setItem('userRole', role);
+    if (userData) {
+      setUserStats(prev => ({
+        ...prev,
+        fullName: userData.fullName || prev.fullName,
+        email: userData.email || prev.email,
+        phone: userData.phone || prev.phone,
+        address: userData.address || prev.address
+      }));
+    }
+
+    // Redirect new users to onboarding
+    const onboardingComplete = localStorage.getItem('onboardingComplete');
+    if (!onboardingComplete && role !== 'admin') {
+      navigate('/onboarding');
+    }
   };
 
   const handleLogout = () => {
@@ -105,9 +137,6 @@ function App() {
     points: 450,
     rank: '#8',
     streak: '5 Days',
-    postedCount: 12,
-    acceptedCount: 5,
-    solvedCount: 3,
     history: [
       { id: 101, action: 'Solved Drainage Issue', date: '20 Feb 2026', points: 150 },
       { id: 102, action: 'Verified Street Light', date: '18 Feb 2026', points: 50 }
@@ -117,6 +146,17 @@ function App() {
       { id: 2, name: 'First Responder', tier: 'Silver' }
     ]
   });
+
+  // Calculate dynamic stats for the user
+  const dynamicStats = React.useMemo(() => {
+    return {
+      postedCount: issues.filter(i => i.user === 'You').length,
+      acceptedCount: issues.filter(i => i.acceptedBy === 'You' && i.status === 'In Progress').length,
+      solvedCount: issues.filter(i => (i.solvedBy === 'Santhosh Kumar' || i.acceptedBy === 'You') && i.status === 'Solved').length
+    };
+  }, [issues]);
+
+  const fullUserStats = { ...userStats, ...dynamicStats };
 
   const updateIssueStatus = (id, newStatus, extra = {}) => {
     setIssues(prev => prev.map(issue => {
@@ -155,7 +195,6 @@ function App() {
             setUserStats(prev => ({
               ...prev,
               points: prev.points + 150,
-              solvedCount: prev.solvedCount + 1,
               history: [{ id: Date.now(), action: `Solved: ${issue.description.substring(0, 20)}...`, date: 'Today', points: 150 }, ...prev.history]
             }));
           }
@@ -207,11 +246,25 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/onboarding" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <OnboardingPage />
+          </ProtectedRoute>
+        } />
 
         {/* Protected Resident Routes */}
         <Route path="/dashboard" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Dashboard issues={issues} setIssues={setIssues} notifications={notifications} setNotifications={setNotifications} updateStatus={updateIssueStatus} />
+            <Dashboard
+              issues={issues}
+              setIssues={setIssues}
+              notifications={notifications}
+              setNotifications={setNotifications}
+              updateStatus={updateIssueStatus}
+              theme={theme}
+              toggleTheme={toggleTheme}
+            />
           </ProtectedRoute>
         } />
         <Route path="/tasks" element={
@@ -221,17 +274,22 @@ function App() {
         } />
         <Route path="/profile" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Profile user={userStats} setUser={setUserStats} onLogout={handleLogout} />
+            <Profile user={fullUserStats} setUser={setUserStats} onLogout={handleLogout} />
           </ProtectedRoute>
         } />
         <Route path="/rewards" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Rewards user={userStats} />
+            <Rewards user={fullUserStats} />
           </ProtectedRoute>
         } />
         <Route path="/notifications" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} />
+          </ProtectedRoute>
+        } />
+        <Route path="/issue/:id" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <IssueDetails issues={issues} updateStatus={updateIssueStatus} />
           </ProtectedRoute>
         } />
 

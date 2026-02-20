@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, User, ShieldCheck, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const LoginPage = ({ onLogin }) => {
@@ -17,15 +17,30 @@ const LoginPage = ({ onLogin }) => {
 
         // Simulate API delay
         setTimeout(() => {
-            // Strict Role Enforcement logic - Specific Admin Whitelist
-            if (role === 'admin' && email.toLowerCase() !== '24071a6959@vnrvjiet.in') {
-                setError('Access Denied: Only the primary administrator (24071A6959@vnrvjiet.in) can sign in.');
-                setIsLoading(false);
-                return;
-            }
+            const lowerEmail = email.toLowerCase();
+            const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
 
-            onLogin(role);
-            navigate(role === 'admin' ? '/admin' : '/dashboard');
+            // Strict Role Enforcement logic - Specific Admin Whitelist
+            if (role === 'admin') {
+                if (lowerEmail !== '24071a6959@vnrvjiet.in') {
+                    setError('Access Denied: Only the primary administrator (24071A6959@vnrvjiet.in) can sign in.');
+                    setIsLoading(false);
+                    return;
+                }
+                // For demo purposes, we'll allow the admin login if email matches
+                onLogin(role);
+                navigate('/admin');
+            } else {
+                // Resident Login - Check if user exists in registration database
+                const user = storedUsers.find(u => u.email === lowerEmail && u.password === password);
+
+                if (user) {
+                    onLogin(user.role || 'user', user);
+                    navigate('/dashboard');
+                } else {
+                    setError('Invalid email or password. Please register an account if you haven’t already.');
+                }
+            }
             setIsLoading(false);
         }, 1200);
     };
@@ -217,7 +232,7 @@ const LoginPage = ({ onLogin }) => {
 
                 <div style={{ marginTop: '24px', textAlign: 'center' }}>
                     <p style={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
-                        Demo: user@civic.com / admin@civic.gov
+                        Don't have an account? <Link to="/register" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600' }}>Register here</Link>
                     </p>
                 </div>
             </div>
