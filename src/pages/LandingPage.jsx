@@ -27,35 +27,16 @@ const LandingPage = () => {
                 </div>
 
                 <div className="glass-card" style={{ padding: '2rem', width: '100%', maxWidth: '400px' }}>
-                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Sign In to Continue</h2>
+                    <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Civic Flow Portal</h2>
 
                     <div style={{ display: 'grid', gap: '1rem' }}>
                         <button
-                            onClick={() => handleSignIn('user')}
+                            onClick={() => navigate('/login')}
                             className="btn-primary"
                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}
                         >
                             <User size={20} />
-                            User Sign In
-                        </button>
-
-                        <button
-                            onClick={() => handleSignIn('admin')}
-                            style={{
-                                background: 'transparent',
-                                border: '2px solid var(--primary)',
-                                color: 'var(--primary)',
-                                padding: '12px 24px',
-                                borderRadius: '8px',
-                                fontWeight: '600',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '12px'
-                            }}
-                        >
-                            <ShieldCheck size={20} />
-                            Admin Sign In
+                            Sign In to Portal
                         </button>
                     </div>
 

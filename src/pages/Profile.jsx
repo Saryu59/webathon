@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User as UserIcon, Mail, Phone, MapPin, Send, Layout, CheckCircle, Globe2, Bell, Trophy, ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, X, Camera } from 'lucide-react';
 import Logo from '../components/Logo';
 
-const Profile = ({ user, setUser }) => {
+const Profile = ({ user, setUser, onLogout }) => {
     const navigate = useNavigate();
     const [showSettings, setShowSettings] = useState(false);
     const [editForm, setEditForm] = useState({
@@ -189,13 +189,24 @@ const Profile = ({ user, setUser }) => {
                             </div>
                         </div>
 
-                        <button
-                            onClick={handleSaveSettings}
-                            className="btn-primary"
-                            style={{ width: '100%', marginTop: '24px', padding: '14px', fontSize: '0.95rem' }}
-                        >
-                            Save Changes
-                        </button>
+                        {/* Actions */}
+                        <div className="space-y-4" style={{ marginTop: '24px' }}>
+                            <button
+                                onClick={handleSaveSettings}
+                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[var(--accent)] to-[#0097a7] text-white p-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-all"
+                                style={{ background: 'var(--primary)', color: 'white', border: 'none' }}
+                            >
+                                <Edit size={20} /> Save Changes
+                            </button>
+
+                            <button
+                                onClick={onLogout}
+                                className="w-full flex items-center justify-center gap-2 bg-white/5 border border-red-500/30 text-red-500 p-4 rounded-2xl font-bold hover:bg-red-500/10 active:scale-95 transition-all"
+                                style={{ background: 'rgba(229, 57, 53, 0.05)', border: '1px solid rgba(229, 57, 53, 0.2)', color: '#e53935' }}
+                            >
+                                <LogOut size={20} /> Sign Out
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

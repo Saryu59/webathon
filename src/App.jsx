@@ -7,13 +7,38 @@ import MyTasks from './pages/MyTasks';
 import AdminDashboard from './pages/AdminDashboard';
 import Rewards from './pages/Rewards';
 import Notifications from './pages/Notifications';
+import LoginPage from './pages/LoginPage';
 
 // Time limit for Fixed status before auto-revert to Pending (2 minutes for demo)
 const FIXED_TIMEOUT_MS = 2 * 60 * 1000;
 
-function App() {
-  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user');
+// Access Control Components
+const ProtectedRoute = ({ children, isAuthenticated }) => {
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
+};
 
+const AdminRoute = ({ children, isAuthenticated, role }) => {
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (role !== 'admin') return <Navigate to="/dashboard" replace />;
+  return children;
+};
+
+function App() {
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('userRole'));
+
+  const handleLogin = (role) => {
+    setUserRole(role);
+    setIsAuthenticated(true);
+    localStorage.setItem('userRole', role);
+  };
+
+  const handleLogout = () => {
+    setUserRole(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('userRole');
+  };
   const [issues, setIssues] = useState([
     {
       id: 1,
@@ -181,12 +206,42 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<Dashboard issues={issues} setIssues={setIssues} notifications={notifications} setNotifications={setNotifications} updateStatus={updateIssueStatus} />} />
-        <Route path="/tasks" element={<MyTasks tasks={issues.filter(i => i.acceptedBy === 'You')} updateStatus={updateIssueStatus} addNotification={addNotification} />} />
-        <Route path="/profile" element={<Profile user={userStats} setUser={setUserStats} />} />
-        <Route path="/rewards" element={<Rewards user={userStats} />} />
-        <Route path="/notifications" element={<Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} />} />
-        <Route path="/admin" element={<AdminDashboard issues={issues} setIssues={setIssues} addNotification={addNotification} />} />
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+
+        {/* Protected Resident Routes */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Dashboard issues={issues} setIssues={setIssues} notifications={notifications} setNotifications={setNotifications} updateStatus={updateIssueStatus} />
+          </ProtectedRoute>
+        } />
+        <Route path="/tasks" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <MyTasks tasks={issues.filter(i => i.acceptedBy === 'You')} updateStatus={updateIssueStatus} addNotification={addNotification} />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Profile user={userStats} setUser={setUserStats} onLogout={handleLogout} />
+          </ProtectedRoute>
+        } />
+        <Route path="/rewards" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Rewards user={userStats} />
+          </ProtectedRoute>
+        } />
+        <Route path="/notifications" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Notifications notifications={notifications} setNotifications={setNotifications} issues={issues} />
+          </ProtectedRoute>
+        } />
+
+        {/* Admin Only Route */}
+        <Route path="/admin" element={
+          <AdminRoute isAuthenticated={isAuthenticated} role={userRole}>
+            <AdminDashboard issues={issues} setIssues={setIssues} addNotification={addNotification} />
+          </AdminRoute>
+        } />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
