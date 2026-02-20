@@ -31,7 +31,9 @@ function App() {
       address: 'Main Street, Central Park Area',
       acceptedBy: null,
       solvedBy: null,
-      solvedDate: null
+      solvedDate: null,
+      category: 'Pothole',
+      categoryIcon: '🚧'
     },
     {
       id: 2,
@@ -49,7 +51,9 @@ function App() {
       address: 'Lane 5, Greenfield Road',
       acceptedBy: null,
       solvedBy: null,
-      solvedDate: null
+      solvedDate: null,
+      category: 'Infrastructure',
+      categoryIcon: '💡'
     },
     {
       id: 3,
@@ -67,7 +71,9 @@ function App() {
       address: 'Near Entry Gate 2, Metro Square',
       acceptedBy: 'Santhosh Kumar',
       solvedBy: 'Santhosh Kumar',
-      solvedDate: '19 Feb 2026'
+      solvedDate: '19 Feb 2026',
+      category: 'Waste',
+      categoryIcon: '🗑️'
     }
   ]);
 

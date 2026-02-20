@@ -141,6 +141,15 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
                                             <MapPin size={13} /> {issue.location}
                                             {issue.address && <span>• {issue.address}</span>}
+                                            {issue.category && (
+                                                <span style={{
+                                                    marginLeft: '8px', padding: '2px 8px', borderRadius: '4px',
+                                                    background: 'rgba(0,0,0,0.05)', fontSize: '0.7rem', fontWeight: 'bold',
+                                                    display: 'flex', alignItems: 'center', gap: '4px'
+                                                }}>
+                                                    {issue.categoryIcon} {issue.category}
+                                                </span>
+                                            )}
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                                             <span style={{

@@ -232,6 +232,18 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                         );
                                     })()}
 
+                                    {issue.category && (
+                                        <div style={{
+                                            display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                            background: 'rgba(0, 77, 64, 0.05)', color: 'var(--primary)',
+                                            padding: '4px 10px', borderRadius: '8px', marginBottom: '12px',
+                                            fontSize: '0.75rem', fontWeight: 'bold', border: '1px solid rgba(0, 77, 64, 0.1)'
+                                        }}>
+                                            <span>{issue.categoryIcon}</span>
+                                            <span>{issue.category.toUpperCase()}</span>
+                                        </div>
+                                    )}
+
                                     <p style={{ fontSize: '0.95rem', marginBottom: '14px', fontWeight: '500', lineHeight: '1.5' }}>{issue.description}</p>
 
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px' }}>

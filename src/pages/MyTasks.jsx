@@ -65,7 +65,18 @@ const MyTasks = ({ tasks, updateStatus, addNotification }) => {
                                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}><Clock size={12} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> {task.time}</span>
                                 </div>
 
-                                <p style={{ fontWeight: '600', marginBottom: '8px' }}>{task.description}</p>
+                                {task.category && (
+                                    <div style={{
+                                        display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                        background: 'rgba(0, 77, 64, 0.05)', color: 'var(--primary)',
+                                        padding: '4px 10px', borderRadius: '8px', marginBottom: '12px',
+                                        fontSize: '0.7rem', fontWeight: 'bold', border: '1px solid rgba(0, 77, 64, 0.1)'
+                                    }}>
+                                        <span>{task.categoryIcon}</span>
+                                        <span>{task.category.toUpperCase()}</span>
+                                    </div>
+                                )}
+                                <p style={{ fontSize: '0.9rem', marginBottom: '16px', fontWeight: '500', lineHeight: '1.5' }}>{task.description}</p>
 
                                 {/* Countdown for In Progress */}
                                 {task.status === 'In Progress' && task.acceptedAt && (() => {

@@ -11,6 +11,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
     const [isScanning, setIsScanning] = useState(false);
     const [scanStep, setScanStep] = useState('');
     const [confidence, setConfidence] = useState(0);
+    const [detectedCategory, setDetectedCategory] = useState(null);
 
     const handleCaptureLocation = () => {
         if ("geolocation" in navigator) {
@@ -68,6 +69,18 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             return;
         }
 
+        const getCategory = (desc) => {
+            const d = desc.toLowerCase();
+            if (d.includes('pothole') || d.includes('road') || d.includes('pavement')) return { name: 'Pothole', icon: '🚧' };
+            if (d.includes('garbage') || d.includes('trash') || d.includes('waste') || d.includes('dump')) return { name: 'Waste', icon: '🗑️' };
+            if (d.includes('light') || d.includes('lamp') || d.includes('electricity')) return { name: 'Infrastructure', icon: '💡' };
+            if (d.includes('water') || d.includes('leak') || d.includes('drain') || d.includes('sewage')) return { name: 'Water/Sanitation', icon: '💧' };
+            return { name: 'General', icon: '📋' };
+        };
+
+        const category = getCategory(description);
+        setDetectedCategory(category);
+
         // Simulate Realistic AI Image Verification
         setIsScanning(true);
         setError('');
@@ -76,7 +89,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
         const steps = [
             { label: 'Detecting global objects...', time: 600 },
             { label: 'Analyzing street textures...', time: 1200 },
-            { label: 'Categorizing civic features...', time: 1800 },
+            { label: `Detected: ${category.name} ${category.icon}`, time: 1800 },
             { label: 'Finalizing confidence score...', time: 2400 }
         ];
 
@@ -121,7 +134,9 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 likes: 0,
                 likedBy: [],
                 status: 'Pending',
-                aiConfidence: score
+                aiConfidence: score,
+                category: category.name,
+                categoryIcon: category.icon
             };
 
             onPost(newIssue);
