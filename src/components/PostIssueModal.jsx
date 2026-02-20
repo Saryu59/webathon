@@ -9,6 +9,8 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
     const [image, setImage] = useState(null);
     const [error, setError] = useState('');
     const [isScanning, setIsScanning] = useState(false);
+    const [scanStep, setScanStep] = useState('');
+    const [confidence, setConfidence] = useState(0);
 
     const handleCaptureLocation = () => {
         if ("geolocation" in navigator) {
@@ -66,17 +68,41 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             return;
         }
 
-        // Simulate AI Image Verification
+        // Simulate Realistic AI Image Verification
         setIsScanning(true);
         setError('');
+        setConfidence(0);
+
+        const steps = [
+            { label: 'Detecting global objects...', time: 600 },
+            { label: 'Analyzing street textures...', time: 1200 },
+            { label: 'Categorizing civic features...', time: 1800 },
+            { label: 'Finalizing confidence score...', time: 2400 }
+        ];
+
+        steps.forEach((step, index) => {
+            setTimeout(() => setScanStep(step.label), step.time);
+        });
 
         setTimeout(() => {
-            // Mock AI Logic: Ensure description has civic keywords
-            const civicKeywords = ['pothole', 'road', 'light', 'lamp', 'garbage', 'trash', 'waste', 'water', 'drain', 'broken', 'repair'];
-            const hasKeyword = civicKeywords.some(kw => description.toLowerCase().includes(kw));
+            // Strict Logic: Ensure description is detailed and has keywords
+            const civicKeywords = ['pothole', 'road', 'light', 'lamp', 'garbage', 'trash', 'waste', 'water', 'drain', 'broken', 'repair', 'pavement', 'sidewalk', 'street'];
+            const descriptionLower = description.toLowerCase();
+            const hasKeywords = civicKeywords.filter(kw => descriptionLower.includes(kw));
 
-            if (!hasKeyword) {
-                setError('AI Verification Failed: The uploaded image does not appear to match a recognized civic issue category. Please provide a more detailed description or a clearer photo.');
+            // Calculate a mock confidence score
+            let score = 40 + (hasKeywords.length * 15) + (description.length > 25 ? 20 : 0);
+            score = Math.min(score, 98) - Math.floor(Math.random() * 5); // Add some "AI" randomness
+            setConfidence(score);
+
+            if (description.trim().length < 15) {
+                setError('AI Verification Failed (Confidence: ' + score + '%). Description is too short for accurate community analysis. Please provide more detail (min 15 chars).');
+                setIsScanning(false);
+                return;
+            }
+
+            if (score <= 70) {
+                setError('AI Verification Failed (Confidence: ' + score + '%). The photo or description doesn\'t clearly match a recognized civic issue. Please provide a clearer photo or more specific keywords (e.g., "pothole on road", "broken street lamp").');
                 setIsScanning(false);
                 return;
             }
@@ -94,7 +120,8 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 verified: false,
                 likes: 0,
                 likedBy: [],
-                status: 'Pending'
+                status: 'Pending',
+                aiConfidence: score
             };
 
             onPost(newIssue);
@@ -105,7 +132,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             setImage(null);
             setManualAddress('');
             setError('');
-        }, 2000);
+        }, 2800);
     };
 
     if (!isOpen) return null;
@@ -267,9 +294,13 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                             <>
                                 <div className="scanning-line" style={{
                                     position: 'absolute', top: 0, left: 0, width: '100%', height: '2px',
-                                    background: 'white', opacity: 0.5, animation: 'scan 1s infinite linear'
+                                    background: 'white', opacity: 0.5, animation: 'scan 1.2s infinite linear'
                                 }} />
-                                <Camera size={18} className="spin" /> Scanning Image...
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Camera size={18} className="spin" /> {scanStep || 'Analyzing...'}
+                                    </div>
+                                </div>
                             </>
                         ) : (
                             <>
