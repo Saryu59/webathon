@@ -138,12 +138,10 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                                 alt=""
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                 onError={(e) => {
-                                                    // Intelligent category-aware fallbacks for Admin view
-                                                    e.target.style.opacity = '0';
-                                                    let fallbackColor = '#f1f5f9';
-                                                    if (issue.category === 'Pothole') fallbackColor = '#455a64';
-                                                    else if (issue.category === 'Infrastructure') fallbackColor = '#1a237e';
-                                                    else if (issue.category === 'Waste') fallbackColor = '#2e7d32';
+                                                    // High-reliability Admin fallback
+                                                    e.target.style.display = 'none';
+                                                    let fallbackColor = '#cfd8dc';
+                                                    if (issue.category === 'Pothole') fallbackColor = '#90a4ae';
                                                     e.target.parentElement.style.background = fallbackColor;
                                                 }}
                                             />

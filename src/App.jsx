@@ -18,8 +18,8 @@ function App() {
     {
       id: 1,
       user: 'Ravi Kumar',
-      image: 'https://images.unsplash.com/photo-1544191315-18456f918e95?w=800&q=80', // Reliable Pothole
-      description: 'Severe dry pothole on the city bridge. Crack patterns indicate structural strain on the road surface.',
+      image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80', // Robust Pothole Link
+      description: 'Severe puddle-filled pothole on the city bridge. Critical risk for commuters and vehicle alignment.',
       time: '2 hours ago',
       postedDate: '20 Feb 2026',
       location: 'Main Street Bridge',
@@ -35,48 +35,6 @@ function App() {
       category: 'Pothole',
       categoryIcon: '🚧',
       aiConfidence: 89
-    },
-    {
-      id: 2,
-      user: 'Anita S.',
-      image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&q=80', // Stable Streetlight
-      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
-      time: '5 hours ago',
-      postedDate: '20 Feb 2026',
-      location: 'Sector 4, Greenfield',
-      coordinates: { lat: 12.9800, lng: 77.6000 },
-      verified: false,
-      likes: 12,
-      likedBy: [],
-      status: 'Pending',
-      address: 'Lane 5, Greenfield Road',
-      acceptedBy: null,
-      solvedBy: null,
-      solvedDate: null,
-      category: 'Infrastructure',
-      categoryIcon: '💡',
-      aiConfidence: 94
-    },
-    {
-      id: 3,
-      user: 'Vikram M.',
-      image: '/garbage.jpg', // User's local garbage image
-      description: 'Massive garbage accumulation blocking the road near metro buses. Sanitation sweep required.',
-      time: '1 day ago',
-      postedDate: '18 Feb 2026',
-      location: 'Metro Terminal West',
-      coordinates: { lat: 12.9500, lng: 77.5800 },
-      verified: true,
-      likes: 56,
-      likedBy: [],
-      status: 'Solved',
-      address: 'Near Bus Depot 2',
-      acceptedBy: 'Santhosh Kumar',
-      solvedBy: 'Santhosh Kumar',
-      solvedDate: '19 Feb 2026',
-      category: 'Waste',
-      categoryIcon: '🗑️',
-      aiConfidence: 97
     }
   ]);
 

@@ -217,19 +217,29 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                             }}
                                             className="issue-image"
                                             onError={(e) => {
-                                                // Intelligent category-aware fallbacks
-                                                e.target.style.opacity = '0'; // Hide the broken image/alt text
-                                                let fallbackColor = 'linear-gradient(135deg, #eceff1 0%, #cfd8dc 100%)';
+                                                // High-reliability image fallback
+                                                e.target.style.display = 'none'; // Completely hide the broken image element
+
+                                                // Lighter, professional placeholder background
+                                                let fallbackColor = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+                                                let placeholderIcon = '📷';
 
                                                 if (issue.category === 'Pothole') {
-                                                    fallbackColor = 'linear-gradient(135deg, #455a64 0%, #263238 100%)'; // Asphalt look
-                                                } else if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
-                                                    fallbackColor = 'linear-gradient(135deg, #1a237e 0%, #0d47a1 100%)'; // Night/Sky look
-                                                } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
-                                                    fallbackColor = 'linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%)'; // Green/Waste look
+                                                    fallbackColor = 'linear-gradient(135deg, #cfd8dc 0%, #90a4ae 100%)'; // Concrete look
+                                                    placeholderIcon = '🚧';
                                                 }
 
-                                                e.target.parentElement.style.background = fallbackColor;
+                                                const parent = e.target.parentElement;
+                                                parent.style.background = fallbackColor;
+
+                                                // If text doesn't already exist, add a centered icon
+                                                if (!parent.querySelector('.img-placeholder')) {
+                                                    const icon = document.createElement('div');
+                                                    icon.className = 'img-placeholder';
+                                                    icon.style.fontSize = '2rem';
+                                                    icon.innerText = placeholderIcon;
+                                                    parent.appendChild(icon);
+                                                }
                                             }}
                                         />
                                         {/* Scanning Laser Overlay */}
