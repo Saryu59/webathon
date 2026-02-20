@@ -91,7 +91,8 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             { label: 'Detecting global objects...', time: 600 },
             { label: 'Analyzing street textures...', time: 1200 },
             { label: `Detected: ${category.name} ${category.icon}`, time: 1800 },
-            { label: 'Finalizing confidence score...', time: 2400 }
+            { label: 'Comparing visual signatures...', time: 2400 },
+            { label: 'Finalizing confidence score...', time: 3000 }
         ];
 
         steps.forEach((step, index) => {
@@ -99,21 +100,29 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
         });
 
         setTimeout(() => {
-            // Strict Logic: Ensure description is detailed and has keywords
             // Comprehensive Civic Keyword Database (Infrastructure, Sanitation, Utilities, Public Safety)
-            const civicKeywords = [
-                'pothole', 'road', 'pavement', 'sidewalk', 'street', 'lane', 'asphalt', 'concrete', 'tar', 'crack', 'crater', 'bump', 'uneven',
-                'garbage', 'trash', 'waste', 'dump', 'litter', 'bin', 'container', 'debris', 'cleanup', 'sweep', 'spill', 'smell', 'stench', 'dirt', 'filth', 'sanitation',
-                'light', 'lamp', 'electricity', 'power', 'pole', 'wire', 'cable', 'sign', 'signal', 'traffic', 'barricade', 'barrier', 'scaffolding', 'bridge', 'wall', 'fence',
-                'water', 'leak', 'leakage', 'pipe', 'drain', 'sewage', 'manhole', 'overflow', 'flood', 'stagnation', 'puddle', 'tap', 'valve', 'hydrant', 'pump', 'gutter',
-                'tree', 'branch', 'fire', 'hazard', 'danger', 'obstruction', 'graffiti', 'vandalism', 'stray', 'noise', 'smoke', 'dust', 'pollution', 'park', 'bench', 'playground',
-                'broken', 'repair', 'fix', 'maintain', 'hazard'
+            const categories = [
+                { name: 'Pothole', keywords: ['pothole', 'road', 'pavement', 'asphalt', 'crater', 'bump', 'uneven'] },
+                { name: 'Waste', keywords: ['garbage', 'trash', 'waste', 'dump', 'litter', 'bin', 'cleanup', 'filth'] },
+                { name: 'Infrastructure', keywords: ['light', 'lamp', 'power', 'pole', 'wire', 'sign', 'signal'] },
+                { name: 'Water', keywords: ['water', 'leak', 'leakage', 'pipe', 'drain', 'sewage', 'overflow'] },
+                { name: 'Safety', keywords: ['tree', 'branch', 'hazard', 'danger', 'fire', 'graffiti', 'stray'] }
             ];
+
             const descriptionLower = description.toLowerCase();
-            const hasKeywords = civicKeywords.filter(kw => descriptionLower.includes(kw));
+            const matchingCategories = categories.filter(cat =>
+                cat.keywords.some(kw => descriptionLower.includes(kw))
+            );
 
             // Calculate a mock confidence score
-            let score = 50 + (hasKeywords.length * 15) + (description.length > 25 ? 20 : 0);
+            let score = 50 + (matchingCategories.length > 0 ? 20 : 0) + (description.length > 30 ? 20 : 0);
+
+            // Detect categorical conflicts (e.g., "water" and "tree" in same report)
+            const hasConflict = matchingCategories.length > 1;
+            if (hasConflict) {
+                score -= 40; // Heavy penalty for "mixed signals"
+            }
+
             score = Math.min(score, 98) - Math.floor(Math.random() * 5); // Add some "AI" randomness
             setConfidence(score);
 
@@ -123,8 +132,14 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 return;
             }
 
+            if (hasConflict) {
+                setError(`AI Conflict Detected (Confidence: ${score}%). Description contains contradictory civic categories (${matchingCategories.map(c => c.name).join(' & ')}). Our Vision AI cannot align this text with a single visual signature. Please describe only ONE specific issue.`);
+                setIsScanning(false);
+                return;
+            }
+
             if (score <= 70) {
-                setError('AI Verification Failed (Confidence: ' + score + '%). The photo or description doesn\'t clearly match a recognized civic issue. Please provide a clearer photo or more specific keywords (e.g., "pothole on road", "broken street lamp").');
+                setError('AI Verification Failed (Confidence: ' + score + '%). Visual identifiers in the photo do not sufficiently match the keywords in your description. Please provide a clearer photo or more specific keywords.');
                 setIsScanning(false);
                 return;
             }
