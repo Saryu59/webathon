@@ -217,8 +217,14 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                             }}
                                             className="issue-image"
                                             onError={(e) => {
-                                                // High-quality fallback if local file is missing
-                                                const fallback = 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?w=800&q=80';
+                                                // Intelligent category-aware fallbacks
+                                                let fallback = 'https://images.unsplash.com/photo-1544191315-18456f918e95?w=800&q=80'; // Default Pothole
+                                                if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
+                                                    fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?w=800&q=80'; // Streetlight silhouette
+                                                } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
+                                                    fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800&q=80'; // Garbage
+                                                }
+
                                                 if (e.target.src !== fallback) {
                                                     e.target.src = fallback;
                                                 }

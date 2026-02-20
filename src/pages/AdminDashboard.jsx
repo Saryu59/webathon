@@ -137,7 +137,19 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                                 src={issue.image}
                                                 alt=""
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerText = '📷'; }}
+                                                onError={(e) => {
+                                                    // Intelligent category-aware fallbacks for Admin view
+                                                    let fallback = 'https://images.unsplash.com/photo-1544191315-18456f918e95?w=200&q=80'; // Default Pothole
+                                                    if (issue.category === 'Infrastructure' || issue.category === 'Electrification') {
+                                                        fallback = 'https://images.unsplash.com/photo-1470076892663-af684e5a15af?w=200&q=80'; // Streetlight silhouette
+                                                    } else if (issue.category === 'Waste' || issue.category === 'Sanitation') {
+                                                        fallback = 'https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=200&q=80'; // Garbage
+                                                    }
+
+                                                    if (e.target.src !== fallback) {
+                                                        e.target.src = fallback;
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     )}
