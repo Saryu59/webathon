@@ -15,6 +15,12 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
     const [detectedCategory, setDetectedCategory] = useState(null);
     const [locationWarning, setLocationWarning] = useState(false);
     const [pendingIssue, setPendingIssue] = useState(null);
+    const [isBorderline, setIsBorderline] = useState(false);
+    const [userConfirmed, setUserConfirmed] = useState(false);
+    const [imagePigments, setImagePigments] = useState({ green: 0, grey: 0 });
+    const [imageEntropy, setImageEntropy] = useState(0);
+    const [imageDiversity, setImageDiversity] = useState(0);
+    const [imageIdentical, setImageIdentical] = useState(0);
 
     const handleCaptureLocation = () => {
         if ("geolocation" in navigator) {
@@ -38,6 +44,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 setImage(dataUrl);
                 setError('');
 
+                // --- STEP 1: Image Label Detection (Simulated Vision API) ---
                 // Advanced Contrast-based Document/Screenshot Detector
                 const img = new Image();
                 img.onload = () => {
@@ -53,6 +60,9 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                     let darkPixels = 0;
                     let sumLuma = 0;
                     let sumLumaSq = 0;
+                    let greenCount = 0;
+                    let greyCount = 0;
+                    let identicalAdjCount = 0; // Check for "perfect" digital blocks
                     const colorCounts = new Set();
                     const total = MAX * MAX;
 
@@ -68,9 +78,21 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                         if (luma > 200) lightPixels++;
                         if (luma < 60) darkPixels++;
 
+                        // Digital Check: is this pixel EXEACTLY the same as the previous one?
+                        // Real photos have sensor noise; digital UIs have perfect color blocks
+                        if (i >= 4) {
+                            if (data[i] === data[i - 4] && data[i + 1] === data[i - 3] && data[i + 2] === data[i - 2]) {
+                                identicalAdjCount++;
+                            }
+                        }
+
                         // Quantize color more strictly
                         const colorKey = `${Math.floor(r / 24)},${Math.floor(g / 24)},${Math.floor(b / 24)}`;
                         colorCounts.add(colorKey);
+
+                        // --- Phase 12: Specific Pigment Ratios ---
+                        if (g > 40 && g > r * 1.05 && g > b) greenCount++;
+                        if (Math.abs(r - g) < 15 && Math.abs(g - b) < 15 && r > 60 && r < 180) greyCount++;
                     }
 
                     const meanLuma = sumLuma / total;
@@ -80,15 +102,23 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                     const lightRatio = lightPixels / total;
                     const darkRatio = darkPixels / total;
                     const colorDiversity = colorCounts.size;
+                    const identicalRatio = identicalAdjCount / total;
 
-                    // REAL photos usually have stdDevLuma > 40 and colorDiversity > 60
-                    // Documents/Screenshots have low stdDev (mostly flat) or very low diversity
-                    const isTooFlat = stdDevLuma < 35;
-                    const isTextLikely = lightRatio > 0.45 && darkRatio > 0.02 && colorDiversity < 40;
-                    const isUnnatural = colorDiversity < 30 || (lightRatio + darkRatio) > 0.92;
+                    setImagePigments({ green: greenCount / total, grey: greyCount / total });
+                    setImageEntropy(stdDevLuma);
+                    setImageDiversity(colorDiversity);
+                    setImageIdentical(identicalRatio);
 
-                    if (isTooFlat || isTextLikely || isUnnatural) {
-                        setImageWarning('⚠️ Non-Civic Signature: This image looks like a document, screenshot, or digital graphic. Please upload a real, clear photo taken at the location.');
+                    // Digital Art / Website Screenshot detector: 
+                    // 1. Large areas of EXACT same quantized color
+                    // 2. High brightness + Low diversity
+                    // 3. High "Identical Adjacency" (The "Digital Signature")
+                    const isUnnatural = colorDiversity < 45 || (lightRatio + darkRatio) > 0.94;
+                    const isTooFlat = stdDevLuma < 38;
+                    const isPerfectlyDigital = identicalRatio > 0.35; // >35% perfectly matching adjacent pixels
+
+                    if (isTooFlat || isUnnatural || isPerfectlyDigital) {
+                        setImageWarning('⚠️ Digital/Non-Civic Signature: This image looks like an illustration, website, or digital graphic. Please upload a real, textured photo taken at the location.');
                     } else {
                         setImageWarning('');
                     }
@@ -102,11 +132,12 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
     const runAIVerificationAndPost = (overrideLocationWarning = false) => {
         const getCategory = (desc) => {
             const d = desc.toLowerCase();
-            if (d.match(/pothole|road|pavement|sidewalk|street|lane|asphalt|concrete|tar|crack|crater|bump|uneven/)) return { name: 'Pothole', icon: '🚧' };
-            if (d.match(/garbage|trash|waste|dump|litter|bin|container|debris|cleanup|sweep|spill|smell|stench|dirt|filth|sanitation/)) return { name: 'Waste', icon: '🗑️' };
-            if (d.match(/light|lamp|electricity|power|pole|wire|cable|sign|signal|traffic|barricade|barrier|scaffolding|bridge|wall|fence/)) return { name: 'Infrastructure', icon: '💡' };
-            if (d.match(/water|leak|leakage|pipe|drain|sewage|manhole|overflow|flood|stagnation|puddle|tap|valve|hydrant|pump|gutter/)) return { name: 'Water/Sanitation', icon: '💧' };
             if (d.match(/tree|branch|fire|hazard|danger|obstruction|graffiti|vandalism|stray|noise|smoke|dust|pollution|park|bench|playground/)) return { name: 'Safety/Public Space', icon: '🛡️' };
+            if (d.match(/water|leak|leakage|pipe|drain|sewage|manhole|overflow|flood|stagnation|puddle|tap|valve|hydrant|pump|gutter/)) return { name: 'Water/Sanitation', icon: '💧' };
+            if (d.match(/light|lamp|electricity|power|pole|wire|cable|sign|signal|traffic|barricade|barrier|scaffolding|bridge|wall|fence/)) return { name: 'Infrastructure', icon: '💡' };
+            if (d.match(/garbage|trash|waste|dump|litter|bin|container|debris|cleanup|sweep|spill|smell|stench|dirt|filth|sanitation/)) return { name: 'Waste', icon: '🗑️' };
+            if (d.match(/pothole|road|pavement|sidewalk|street|lane|asphalt|concrete|tar|crack|crater|bump|uneven/)) return { name: 'Pothole', icon: '🚧' };
+            return null;
             return null;
         };
 
@@ -138,6 +169,7 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
         });
 
         setTimeout(() => {
+            // --- STEP 2: Description Context Matching ---
             // Comprehensive Civic Keyword Database (Infrastructure, Sanitation, Utilities, Public Safety)
             const categories = [
                 { name: 'Pothole', keywords: ['pothole', 'road', 'pavement', 'asphalt', 'crater', 'bump', 'uneven', 'hole', 'repair'] },
@@ -153,7 +185,12 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
             );
 
             // Forbidden keywords (immediate penalty/rejection)
-            const forbidden = ['pizza', 'burger', 'food', 'cat', 'dog', 'pet', 'meme', 'joke', 'movie', 'game', 'shopping', 'offer', 'iphone', 'laptop', 'porn', 'nsfw'];
+            const forbidden = [
+                'pizza', 'burger', 'food', 'cat', 'dog', 'pet', 'meme', 'joke', 'movie', 'game', 'shopping', 'offer',
+                'iphone', 'laptop', 'porn', 'nsfw', 'poop', 'potty', 'shit', 'scat', 'drawing', 'cartoon', 'anime',
+                'illustration', 'business', 'company', 'website', 'vlog', 'design', 'ux', 'ui', 'browser', 'page', 'site',
+                'spa', 'bridal', 'makeup', 'stay', 'dine', 'package', 'offer', 'price', 'treatment', 'massage', 'therapy'
+            ];
             const foundForbidden = forbidden.filter(fw => descriptionLower.includes(fw));
 
             // Calculate a mock confidence score
@@ -185,13 +222,43 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 steps[2].label = "⚠️ Alert: Non-civic context detected";
             }
 
-            const hasConflict = matchingCategories.length > 2; // Increased allowance for complex civic reports
-            if (hasConflict) {
-                score -= 30;
+            // --- Phase 13: Strict Category Context Matching ---
+            // Waste signature: High color diversity (>115) but no dominant pigment clusters
+            const isWasteImage = imageDiversity > 115 && imagePigments.green < 0.1 && imagePigments.grey < 0.15;
+
+            if (category.name.includes('Safety') && imagePigments.green < 0.12) {
+                score -= 60; // MASSIVE penalty (up from -25)
+                steps[3].label = "❌ Reject: Category-Visual mismatch (Tree/Green)";
+                if (isWasteImage) score -= 20; // Extra "Garbage instead of Tree" penalty
             }
 
-            score = Math.floor(Math.min(score, 98) - (Math.random() * 4));
+            if (category.name.includes('Pothole') && imagePigments.grey < 0.08) {
+                score -= 50; // MASSIVE penalty (up from -20)
+                steps[3].label = "❌ Reject: Category-Visual mismatch (Road/Grey)";
+            }
+
+            if (category.name.includes('Waste')) {
+                if (!isWasteImage && imageEntropy < 40) {
+                    score -= 40; // Penalty if "Waste" report but image is too clean/flat
+                    steps[3].label = "⚠️ Alert: Visual signature too clean for Waste";
+                }
+            }
+
+            // Fail-Fast: If visual conflict is extreme, drop score to ground zero
+            if (score < 40) {
+                score = 5;
+                steps[4].label = "❌ Hard Reject: Extreme Visual-Textual Conflict";
+            }
+
+            score = Math.floor(Math.max(0, Math.min(score, 98)) - (Math.random() * 4));
             setConfidence(score);
+
+            // Borderline enforcement
+            if (score > 80 && score < 95) {
+                setIsBorderline(true);
+            } else {
+                setIsBorderline(false);
+            }
 
             if (description.trim().length < 20) {
                 setError('AI Verification Failed (Confidence: ' + score + '%). Description is too vague for accurate impact analysis. Please provide at least 20 characters of detail.');
@@ -230,6 +297,8 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                 categoryIcon: category.icon
             };
 
+            // --- STEP 3: Controlled Access to Post Creation ---
+            // Only if both visual signature and description context succeed, allow post creation
             onPost(newIssue);
             setIsScanning(false);
             onClose();
@@ -427,6 +496,30 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                             </div>
                         )}
 
+                        {/* Phase 12: Borderline Confirmation */}
+                        {isBorderline && !error && (
+                            <div style={{
+                                marginTop: '12px', background: '#fffbeb', border: '1px solid #fcd34d',
+                                borderRadius: '12px', padding: '14px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                    <AlertTriangle size={18} color="#d97706" />
+                                    <strong style={{ color: '#92400e', fontSize: '0.85rem' }}>Final Verification Required</strong>
+                                </div>
+                                <label style={{ display: 'flex', gap: '10px', cursor: 'pointer', alignItems: 'flex-start' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={userConfirmed}
+                                        onChange={(e) => setUserConfirmed(e.target.checked)}
+                                        style={{ marginTop: '3px' }}
+                                    />
+                                    <span style={{ fontSize: '0.78rem', color: '#78350f', lineHeight: '1.4' }}>
+                                        I confirm this is a <strong>real, live outdoor photo</strong>. False reporting for advertisements or jokes will lead to immediate account suspension.
+                                    </span>
+                                </label>
+                            </div>
+                        )}
+
 
                     </div>
 
@@ -497,11 +590,11 @@ const PostIssueModal = ({ isOpen, onClose, onPost, issues = [] }) => {
                     <button
                         type="submit"
                         className="btn-primary"
-                        disabled={isScanning}
+                        disabled={isScanning || (isBorderline && !userConfirmed)}
                         style={{
                             width: '100%', display: 'flex', alignItems: 'center',
                             justifyContent: 'center', gap: '8px', padding: '14px',
-                            opacity: isScanning ? 0.7 : 1,
+                            opacity: (isScanning || (isBorderline && !userConfirmed)) ? 0.7 : 1,
                             position: 'relative',
                             overflow: 'hidden'
                         }}
