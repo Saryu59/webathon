@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     PlusCircle, MapPin, ThumbsUp, Bell, User as UserIcon, Sun, Moon,
-    AlertCircle, Handshake, CheckCircle2, Globe2, Trophy, ClipboardList, Users, Award, Clock
+    AlertCircle, Handshake, CheckCircle2, Globe2, Trophy, ClipboardList, Users, Award, Clock, Settings
 } from 'lucide-react';
 import PostIssueModal from '../components/PostIssueModal';
 import Logo from '../components/Logo';
@@ -92,6 +92,23 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
         }, 3000);
     };
 
+    const handleShare = async (issue) => {
+        const shareData = {
+            title: `Civic Flow Report: ${issue.category || 'Issue'}`,
+            text: `Report: "${issue.description.substring(0, 100)}..." at ${issue.location}. Help us fix it!`,
+            url: `${window.location.origin}/issue/${issue.id}`
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.text} \n\nSee details: ${shareData.url}`);
+                alert('Details copied to clipboard! 📋');
+            }
+        } catch (err) { }
+    };
+
     return (
         <div className="container" style={{ padding: 0 }}>
             {/* Header */}
@@ -137,13 +154,15 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                             )}
                         </div>
                         <div
-                            onClick={() => navigate('/profile')}
+                            onClick={() => navigate('/edit-profile')}
                             style={{
                                 cursor: 'pointer', padding: '10px', background: 'rgba(255,255,255,0.15)',
-                                borderRadius: '14px'
+                                borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '8px'
                             }}
+                            title="Edit Profile & Settings"
                         >
                             <UserIcon size={20} />
+                            <Settings size={18} style={{ opacity: 0.8 }} />
                         </div>
                     </div>
                 </div>
@@ -390,6 +409,19 @@ const Dashboard = ({ issues, setIssues, notifications, setNotifications, updateS
                                                             }}
                                                         >
                                                             <Globe2 size={18} /> {scanningId === issue.id ? 'Scanning...' : 'AI Report'}
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleShare(issue);
+                                                            }}
+                                                            style={{
+                                                                background: 'none', display: 'flex', alignItems: 'center', gap: '6px',
+                                                                color: 'var(--text-muted)', fontWeight: 'bold', fontSize: '0.9rem'
+                                                            }}
+                                                            title="Share Issue"
+                                                        >
+                                                            <Share2 size={18} /> share
                                                         </button>
                                                     </div>
 

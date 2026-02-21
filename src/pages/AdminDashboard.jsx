@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Shield, Users, Trash2, CheckCircle, AlertTriangle, ArrowLeft, MoreVertical, MapPin, Bell, Send, Eye } from 'lucide-react';
 
-const AdminDashboard = ({ issues, setIssues, addNotification }) => {
+const AdminDashboard = ({ issues, setIssues, updateStatus, addNotification }) => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -20,19 +20,9 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
 
     const handleConfirmSolved = (id) => {
         const issue = issues.find(i => i.id === id);
-        setIssues(issues.map(i =>
-            i.id === id ? {
-                ...i,
-                status: 'Solved',
-                solvedDate: new Date().toLocaleDateString(),
-                solvedBy: i.acceptedBy || 'Admin'
-            } : i
-        ));
-        addNotification({
-            type: 'confirm',
-            title: 'Issue Resolved ✅',
-            message: `"${issue?.description?.substring(0, 50)}..." has been confirmed as solved by Admin.`,
-            postId: id
+        updateStatus(id, 'Solved', {
+            solvedDate: new Date().toLocaleDateString(),
+            solvedBy: issue?.acceptedBy || 'Admin'
         });
     };
 
@@ -245,11 +235,10 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                     </div>
                 </div>
 
-                {/* Worker Directory Section */}
                 <div style={{ background: 'white', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.04)', overflow: 'hidden', padding: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px', borderBottom: '1px solid #edf2f7', paddingBottom: '16px' }}>
                         <Users size={24} color="var(--primary)" />
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Field Force Personnel Directory</h3>
+                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Field Force Personnel Directory (India)</h3>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
@@ -257,29 +246,29 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                             {
                                 category: 'Sanitation & Waste',
                                 workers: [
-                                    { name: 'John Smith', role: 'Team Lead', specialty: 'Waste Management', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150', status: 'Active', phone: '+91 98451 12345', address: '23A, Rajajinagar, Bengaluru' },
-                                    { name: 'Sarah Chen', role: 'Technician', specialty: 'Recycling Ops', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150', status: 'On Leave', phone: '+91 95561 67890', address: '14, Electronic City Phase 2, Bengaluru' }
+                                    { name: 'Rajesh Sharma', role: 'Team Lead', specialty: 'Waste Management', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150', status: 'Active', phone: '+91 98451 12345', address: '23A, Rajajinagar, Bengaluru' },
+                                    { name: 'Sunita Verma', role: 'Technician', specialty: 'Recycling Ops', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150', status: 'On Leave', phone: '+91 95561 67890', address: '14, Electronic City, Bengaluru' }
                                 ]
                             },
                             {
                                 category: 'Electrification',
                                 workers: [
-                                    { name: 'Mike Ross', role: 'Senior Engineer', specialty: 'Grid Maintenance', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150', status: 'Active', phone: '+91 73451 44561', address: '7, Indiranagar 100ft Road, Bengaluru' },
-                                    { name: 'Linda Wu', role: 'Specialist', specialty: 'Street Lighting', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150', status: 'On Duty', phone: '+91 90081 23456', address: '5, Whitefield Main Road, Bengaluru' }
+                                    { name: 'Amit Patel', role: 'Senior Engineer', specialty: 'Grid Maintenance', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150', status: 'Active', phone: '+91 73451 44561', address: '7, Marine Drive, Mumbai' },
+                                    { name: 'Priya Das', role: 'Specialist', specialty: 'Street Lighting', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150', status: 'On Duty', phone: '+91 90081 23456', address: '5, Worli Sea Link Road, Mumbai' }
                                 ]
                             },
                             {
                                 category: 'Road Maintenance',
                                 workers: [
-                                    { name: 'David Miller', role: 'Foreman', specialty: 'Asphalt Paving', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150', status: 'Active', phone: '+91 80121 78901', address: '33, Koramangala Block 5, Bengaluru' },
-                                    { name: 'Emma Wilson', role: 'Inspector', specialty: 'Structural Integrity', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150', status: 'On Duty', phone: '+91 96321 34567', address: '10, HSR Layout Sector 3, Bengaluru' }
+                                    { name: 'Suresh Raina', role: 'Foreman', specialty: 'Asphalt Paving', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150', status: 'Active', phone: '+91 80121 78901', address: '33, Miyapur Main Road, Hyderabad' },
+                                    { name: 'Kavita Reddy', role: 'Inspector', specialty: 'Structural Integrity', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150', status: 'On Duty', phone: '+91 96321 34567', address: '10, Gachibowli Flyover, Hyderabad' }
                                 ]
                             },
                             {
                                 category: 'Water & Sewage',
                                 workers: [
-                                    { name: 'Robert King', role: 'Plumbing Expert', specialty: 'Pipe Networks', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150', status: 'Active', phone: '+91 91234 56789', address: '8, Malleshwaram Circle, Bengaluru' },
-                                    { name: 'Karen Lee', role: 'Drainage Tech', specialty: 'Stormwater Management', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150', status: 'On Duty', phone: '+91 88901 23456', address: '22, JP Nagar 6th Phase, Bengaluru' }
+                                    { name: 'Robert Dsouza', role: 'Plumbing Expert', specialty: 'Pipe Networks', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150', status: 'Active', phone: '+91 91234 56789', address: '8, Anna Salai, Chennai' },
+                                    { name: 'Lakshmi Nair', role: 'Drainage Tech', specialty: 'Stormwater Management', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150', status: 'On Duty', phone: '+91 88901 23456', address: '22, T-Nagar, Chennai' }
                                 ]
                             }
                         ].map((cat, idx) => (
@@ -294,17 +283,27 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                             <div style={{ flex: 1 }}>
                                                 <p style={{ fontSize: '0.85rem', fontWeight: 'bold', margin: 0 }}>{worker.name}</p>
                                                 <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '1px 0' }}>{worker.role} • {worker.specialty}</p>
-                                                {worker.phone && <p style={{ fontSize: '0.68rem', color: 'var(--text-muted)', margin: '1px 0' }}>📞 {worker.phone}</p>}
+                                                {worker.phone && (
+                                                    <a href={`tel:${worker.phone}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px', margin: '2px 0' }}>
+                                                        <span style={{ fontSize: '0.68rem', color: 'var(--primary)', fontWeight: '600' }}>📞 {worker.phone}</span>
+                                                    </a>
+                                                )}
                                                 {worker.address && <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: 0 }}>📍 {worker.address}</p>}
                                             </div>
-                                            <span style={{
-                                                fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px',
-                                                background: worker.status === 'Active' ? '#e6fffa' : worker.status === 'On Duty' ? '#ebf8ff' : '#fff5f5',
-                                                color: worker.status === 'Active' ? '#319795' : worker.status === 'On Duty' ? '#3182ce' : '#e53935',
-                                                fontWeight: 'bold', border: `1px solid ${worker.status === 'Active' ? '#b2f5ea' : worker.status === 'On Duty' ? '#bee3f8' : '#feb2b2'}`
-                                            }}>
-                                                {worker.status}
-                                            </span>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end' }}>
+                                                <span style={{
+                                                    fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px',
+                                                    background: worker.status === 'Active' ? '#e6fffa' : worker.status === 'On Duty' ? '#ebf8ff' : '#fff5f5',
+                                                    color: worker.status === 'Active' ? '#319795' : worker.status === 'On Duty' ? '#3182ce' : '#e53935',
+                                                    fontWeight: 'bold', border: `1px solid ${worker.status === 'Active' ? '#b2f5ea' : worker.status === 'On Duty' ? '#bee3f8' : '#feb2b2'}`,
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    {worker.status}
+                                                </span>
+                                                <a href={`tel:${worker.phone}`} style={{
+                                                    fontSize: '0.6rem', background: 'var(--primary)', color: 'white', padding: '2px 6px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold'
+                                                }}>Call Now</a>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>

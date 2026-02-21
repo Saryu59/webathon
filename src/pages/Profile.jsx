@@ -1,30 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User as UserIcon, Mail, Phone, MapPin, Send, Layout, CheckCircle, Globe2, Bell, Trophy, ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, X, Camera, Sun, Moon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { User as UserIcon, Mail, Phone, MapPin, Send, Layout, CheckCircle, Globe2, Bell, Trophy, ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, X, Camera, Sun, Moon, Edit } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
     const navigate = useNavigate();
-    const [showSettings, setShowSettings] = useState(false);
-    const [editForm, setEditForm] = useState({
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        address: user.address
-    });
+    const location = useLocation();
 
-    const handleSaveSettings = () => {
-        const updated = {
-            ...user,
-            fullName: editForm.fullName,
-            email: editForm.email,
-            phone: editForm.phone,
-            address: editForm.address
-        };
-        setUser(updated);
-        localStorage.setItem('userProfile', JSON.stringify(updated));
-        setShowSettings(false);
-    };
+    if (!user) return null;
 
     return (
         <div className="container" style={{ padding: '0 0 80px 0' }}>
@@ -43,7 +26,7 @@ const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
                             <button onClick={toggleTheme} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
                                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} color="#ffd700" />}
                             </button>
-                            <button onClick={() => setShowSettings(true)} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
+                            <button onClick={() => navigate('/edit-profile')} style={{ background: 'rgba(255,255,255,0.15)', color: 'white', padding: '8px', borderRadius: '10px' }}>
                                 <Settings size={18} />
                             </button>
                         </div>
@@ -65,7 +48,7 @@ const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
                                 {user.photo ? <img src={user.photo} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <UserIcon size={40} color="var(--primary)" />}
                             </div>
                             <button
-                                onClick={() => setShowSettings(true)}
+                                onClick={() => navigate('/edit-profile')}
                                 style={{
                                     position: 'absolute', bottom: 0, right: 0, background: 'var(--primary)',
                                     color: 'white', border: '2px solid white', borderRadius: '50%', padding: '6px'
@@ -116,7 +99,7 @@ const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
                             <div style={{ background: 'var(--input-bg)', padding: '10px', borderRadius: '12px' }}><Phone size={18} color="var(--primary)" /></div>
                             <div style={{ flex: 1 }}>
                                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Phone</p>
-                                <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.email}</p>
+                                <p style={{ fontWeight: '600', fontSize: '0.9rem' }}>{user.phone}</p>
                             </div>
                         </div>
                         <div style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -144,79 +127,6 @@ const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
                 </div>
             </div>
 
-            {/* Settings Modal */}
-            {showSettings && (
-                <div style={{
-                    position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 2000,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px'
-                }}>
-                    <div style={{
-                        background: 'var(--surface)', borderRadius: '24px', padding: '28px', width: '100%', maxWidth: '480px',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.3)', color: 'var(--text)'
-                    }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                            <h2 style={{ fontSize: '1.2rem' }}>Edit Profile</h2>
-                            <button onClick={() => setShowSettings(false)} style={{ background: '#f1f5f9', padding: '8px', borderRadius: '10px' }}>
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div>
-                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Full Name</label>
-                                <input
-                                    value={editForm.fullName}
-                                    onChange={e => setEditForm({ ...editForm, fullName: e.target.value })}
-                                    style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Email</label>
-                                <input
-                                    value={editForm.email}
-                                    onChange={e => setEditForm({ ...editForm, email: e.target.value })}
-                                    style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Phone</label>
-                                <input
-                                    value={editForm.phone}
-                                    onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
-                                    style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '6px', display: 'block' }}>Address</label>
-                                <input
-                                    value={editForm.address}
-                                    onChange={e => setEditForm({ ...editForm, address: e.target.value })}
-                                    style={{ width: '100%', padding: '12px 16px', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="space-y-4" style={{ marginTop: '24px' }}>
-                            <button
-                                onClick={handleSaveSettings}
-                                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[var(--accent)] to-[#0097a7] text-white p-4 rounded-2xl font-bold shadow-lg active:scale-95 transition-all"
-                                style={{ background: 'var(--primary)', color: 'white', border: 'none' }}
-                            >
-                                <Edit size={20} /> Save Changes
-                            </button>
-
-                            <button
-                                onClick={onLogout}
-                                className="w-full flex items-center justify-center gap-2 bg-white/5 border border-red-500/30 text-red-500 p-4 rounded-2xl font-bold hover:bg-red-500/10 active:scale-95 transition-all"
-                                style={{ background: 'rgba(229, 57, 53, 0.05)', border: '1px solid rgba(229, 57, 53, 0.2)', color: '#e53935' }}
-                            >
-                                <LogOut size={20} /> Sign Out
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Footer */}
             <footer style={{

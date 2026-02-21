@@ -11,9 +11,27 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import IssueDetails from './pages/IssueDetails';
 import OnboardingPage from './pages/OnboardingPage';
+import EditProfile from './pages/EditProfile';
 
 // Time limit for Fixed status before auto-revert to Pending (2 minutes for demo)
 const FIXED_TIMEOUT_MS = 2 * 60 * 1000;
+
+// Simulated Cloud Sync Service
+// In a real app, this would use Firebase, WebSockets, or Polling to a real backend
+const CloudSyncService = {
+  lastSynced: Date.now(),
+  push: async (data, type) => {
+    // console.log(`[CloudSync] Pushing ${type}...`);
+    // Simulated network delay
+    await new Promise(r => setTimeout(r, 800));
+    return true;
+  },
+  pull: async () => {
+    // This could fetch from a shared JSON bin or backend
+    // For demo, we return null to signify "no new remote changes"
+    return null;
+  }
+};
 
 // Access Control Components
 const ProtectedRoute = ({ children, isAuthenticated }) => {
@@ -40,7 +58,7 @@ const defaultUserStats = {
   fullName: '',
   email: '',
   phone: '',
-  address: '',
+  address: 'HSR Layout, Bengaluru, Karnataka',
   photo: null,
   points: 0,
   rank: '#—',
@@ -60,16 +78,16 @@ function App() {
       id: 1,
       user: 'Ravi Kumar',
       image: '/pothole.jpg',
-      description: 'Severe puddle-filled pothole on the city bridge. Critical risk for commuters and vehicle alignment.',
+      description: 'Severe puddle-filled pothole near Charminar. Critical risk for commuters and tourists.',
       time: '2 hours ago',
-      postedDate: '20 Feb 2026',
-      location: 'Miyapur Main Road, Hyderabad',
-      coordinates: { lat: 17.4948, lng: 78.3448 },
+      postedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      location: 'Old City, Hyderabad, Telangana',
+      coordinates: { lat: 17.3616, lng: 78.4747 },
       verified: true,
       likes: 24,
       likedBy: [],
       status: 'Verified',
-      address: 'Near Miyapur Metro Station, Hyderabad',
+      address: 'Near Charminar Police Station, Hyderabad',
       acceptedBy: null,
       solvedBy: null,
       solvedDate: null,
@@ -81,22 +99,43 @@ function App() {
       id: 2,
       user: 'Anita S.',
       image: '/streetlight.jfif',
-      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
+      description: 'Streetlight out on Marine Drive promenade. The area is pitch dark and unsafe for evening walkers.',
       time: '5 hours ago',
-      postedDate: '20 Feb 2026',
-      location: 'Indiranagar 100ft Road, Bengaluru',
-      coordinates: { lat: 12.9784, lng: 77.6408 },
+      postedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      location: 'Marine Drive, Mumbai, Maharashtra',
+      coordinates: { lat: 18.9431, lng: 72.8230 },
       verified: false,
       likes: 12,
       likedBy: [],
       status: 'Pending',
-      address: 'Opposite Toit Brewpub, Indiranagar',
+      address: 'Opposite Air India Building, Nariman Point',
       acceptedBy: null,
       solvedBy: null,
       solvedDate: null,
       category: 'Infrastructure',
       categoryIcon: '💡',
       aiConfidence: 94
+    },
+    {
+      id: 3,
+      user: 'Arjun Mehra',
+      image: '/garbage.jpg',
+      description: 'Illegal garbage dumping site near Cubbon Park. Foul smell and attracting strays.',
+      time: 'Just now',
+      postedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      location: 'Cubbon Park, Bengaluru, Karnataka',
+      coordinates: { lat: 12.9779, lng: 77.5952 },
+      verified: false,
+      likes: 5,
+      likedBy: [],
+      status: 'Pending',
+      address: 'Near High Court Entrance, Bengaluru',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null,
+      category: 'Waste',
+      categoryIcon: '🗑️',
+      aiConfidence: 96
     }
   ]);
 
@@ -163,7 +202,20 @@ function App() {
     if (channelRef.current) {
       channelRef.current.postMessage({ type: 'ISSUES_UPDATE', payload: issues });
     }
+    // Also push to CloudSync
+    CloudSyncService.push(issues, 'ISSUES');
   }, [issues]);
+
+  // Periodic Cloud Sync Pull (Simulated Multi-device)
+  useEffect(() => {
+    const syncInterval = setInterval(async () => {
+      const remoteData = await CloudSyncService.pull();
+      if (remoteData && remoteData.issues) {
+        setIssues(remoteData.issues);
+      }
+    }, 10000); // Poll every 10 seconds
+    return () => clearInterval(syncInterval);
+  }, []);
 
   // Auto-revert "In Progress" issues to Pending if not fixed in time
   useEffect(() => {
@@ -335,6 +387,11 @@ function App() {
             <Profile user={fullUserStats} setUser={setUserStats} onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
+        <Route path="/edit-profile" element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <EditProfile user={fullUserStats} setUser={setUserStats} theme={theme} toggleTheme={toggleTheme} />
+          </ProtectedRoute>
+        } />
         <Route path="/rewards" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Rewards user={fullUserStats} issues={issues} theme={theme} toggleTheme={toggleTheme} />
@@ -353,7 +410,7 @@ function App() {
 
         <Route path="/admin" element={
           <AdminRoute isAuthenticated={isAuthenticated} role={userRole}>
-            <AdminDashboard issues={issues} setIssues={setIssues} addNotification={addNotification} />
+            <AdminDashboard issues={issues} setIssues={setIssues} updateStatus={updateIssueStatus} addNotification={addNotification} />
           </AdminRoute>
         } />
 

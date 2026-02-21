@@ -21,6 +21,31 @@ const IssueDetails = ({ issues, updateStatus, theme, toggleTheme }) => {
         );
     }
 
+    const handleShare = async () => {
+        const shareData = {
+            title: `Civic Flow Report: ${issue.category || 'Issue'}`,
+            text: `Check out this report: "${issue.description.substring(0, 100)}..." at ${issue.location}. Join Civic Flow to help solve it!`,
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(`${shareData.text} \n\nSee details: ${shareData.url}`);
+                alert('Details copied to clipboard! 📋');
+            }
+        } catch (err) {
+            console.error('Share failed:', err);
+        }
+    };
+
+    const handleChatAdmin = () => {
+        const adminPhone = "+91 98765 43210"; // Simulated Admin support line
+        const message = `Namaste Admin, I want to discuss this Civic Flow issue:\n\n*ID:* #${issue.id}\n*Category:* ${issue.category}\n*Description:* ${issue.description}\n*Location:* ${issue.location}\n*Link:* ${window.location.href}`;
+        window.open(`https://wa.me/${adminPhone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+    };
+
     const containerStyle = {
         paddingBottom: '40px',
         minHeight: '100vh',
@@ -167,14 +192,21 @@ const IssueDetails = ({ issues, updateStatus, theme, toggleTheme }) => {
                 )}
 
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: '24px', display: 'flex', gap: '12px' }}>
-                    <button className="btn-primary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <button
+                        onClick={handleShare}
+                        className="btn-primary"
+                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                    >
                         <Share2 size={20} /> Share Issue
                     </button>
-                    <button style={{
-                        flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid var(--primary)',
-                        color: 'var(--primary)', fontWeight: 'bold', background: 'transparent',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'
-                    }}>
+                    <button
+                        onClick={handleChatAdmin}
+                        style={{
+                            flex: 1, padding: '12px', borderRadius: '12px', border: '2px solid var(--primary)',
+                            color: 'var(--primary)', fontWeight: 'bold', background: 'transparent',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px'
+                        }}
+                    >
                         <MessageCircle size={20} /> Chat Admin
                     </button>
                 </div>
