@@ -6,10 +6,11 @@ import Logo from '../components/Logo';
 const Rewards = ({ user, theme, toggleTheme }) => {
     const navigate = useNavigate();
 
+    const displayName = user.fullName ? (user.fullName.split(' ')[0] + ' ' + (user.fullName.split(' ')[1]?.[0] || '') + '.').trim() : 'You';
     const leaderboard = [
         { id: 1, name: 'Amit S.', points: 1250, rank: 1, avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=100' },
         { id: 2, name: 'Priya K.', points: 1100, rank: 2, avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100' },
-        { id: 3, name: 'Santhosh K.', points: user.points, rank: 8, avatar: null }, // You
+        { id: 3, name: displayName, points: user.points, rank: 8, avatar: null }, // You
         { id: 4, name: 'Rahul R.', points: 420, rank: 9, avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100' }
     ];
 
@@ -60,7 +61,12 @@ const Rewards = ({ user, theme, toggleTheme }) => {
                 <section style={{ marginBottom: '32px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                         <h3 style={{ fontSize: '1.1rem' }}>Badges & Achievements</h3>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 'bold' }}>View All</span>
+                        <span
+                            onClick={() => navigate('/notifications')}
+                            style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                        >
+                            View All Alerts
+                        </span>
                     </div>
                     <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '12px', scrollbarWidth: 'none' }}>
                         {user.badges.map(badge => (
@@ -97,8 +103,8 @@ const Rewards = ({ user, theme, toggleTheme }) => {
                             <div key={player.id} style={{
                                 display: 'flex', alignItems: 'center', padding: '12px',
                                 borderBottom: idx === leaderboard.length - 1 ? 'none' : '1px solid var(--border)',
-                                background: player.name === 'Santhosh K.' ? 'var(--input-bg)' : 'transparent',
-                                borderRadius: player.name === 'Santhosh K.' ? '12px' : '0'
+                                background: player.name === displayName ? 'var(--input-bg)' : 'transparent',
+                                borderRadius: player.name === displayName ? '12px' : '0'
                             }}>
                                 <span style={{ width: '24px', fontWeight: 'bold', fontSize: '0.9rem', color: idx < 3 ? 'var(--primary)' : 'var(--text-muted)' }}>{player.rank}</span>
                                 <div style={{
@@ -107,7 +113,7 @@ const Rewards = ({ user, theme, toggleTheme }) => {
                                 }}>
                                     {player.avatar ? <img src={player.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <User size={20} color="#94a3b8" />}
                                 </div>
-                                <span style={{ flex: 1, fontWeight: '600', fontSize: '0.9rem' }}>{player.name} {player.name === 'Santhosh K.' && '(You)'}</span>
+                                <span style={{ flex: 1, fontWeight: '600', fontSize: '0.9rem' }}>{player.name} {player.name === displayName && '(You)'}</span>
                                 <span style={{ fontWeight: 'bold', color: 'var(--primary)', fontSize: '0.9rem' }}>{player.points} pts</span>
                             </div>
                         ))}

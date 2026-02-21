@@ -184,21 +184,19 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
 
                                     {/* Action Buttons */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
-                                        {/* Send verification notification */}
-                                        {(issue.status === 'Pending' || issue.status === 'Fixed') && (
-                                            <button
-                                                onClick={() => handleSendVerification(issue.id)}
-                                                title="Send verification notification to nearby users"
-                                                style={{
-                                                    padding: '8px 14px', background: '#e3f2fd',
-                                                    color: '#1565c0', borderRadius: '8px', fontSize: '0.75rem',
-                                                    fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px',
-                                                    border: '1px solid #bbdefb'
-                                                }}
-                                            >
-                                                <Send size={14} /> Send Verification
-                                            </button>
-                                        )}
+                                        {/* Send verification notification - visible on ALL issues */}
+                                        <button
+                                            onClick={() => handleSendVerification(issue.id)}
+                                            title="Send verification notification to nearby users"
+                                            style={{
+                                                padding: '8px 14px', background: '#e3f2fd',
+                                                color: '#1565c0', borderRadius: '8px', fontSize: '0.75rem',
+                                                fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px',
+                                                border: '1px solid #bbdefb'
+                                            }}
+                                        >
+                                            <Send size={14} /> Send Verification
+                                        </button>
 
                                         {/* Confirm solve */}
                                         {issue.status === 'Fixed' && (
@@ -259,29 +257,29 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                             {
                                 category: 'Sanitation & Waste',
                                 workers: [
-                                    { name: 'John Smith', role: 'Team Lead', specialty: 'Waste Management', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150', status: 'Active' },
-                                    { name: 'Sarah Chen', role: 'Technician', specialty: 'Recycling Ops', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150', status: 'On Leave' }
+                                    { name: 'John Smith', role: 'Team Lead', specialty: 'Waste Management', photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150', status: 'Active', phone: '+91 98451 12345', address: '23A, Rajajinagar, Bengaluru' },
+                                    { name: 'Sarah Chen', role: 'Technician', specialty: 'Recycling Ops', photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150', status: 'On Leave', phone: '+91 95561 67890', address: '14, Electronic City Phase 2, Bengaluru' }
                                 ]
                             },
                             {
                                 category: 'Electrification',
                                 workers: [
-                                    { name: 'Mike Ross', role: 'Senior Engineer', specialty: 'Grid Maintenance', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150', status: 'Active' },
-                                    { name: 'Linda Wu', role: 'Specialist', specialty: 'Street Lighting', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150', status: 'On Duty' }
+                                    { name: 'Mike Ross', role: 'Senior Engineer', specialty: 'Grid Maintenance', photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150', status: 'Active', phone: '+91 73451 44561', address: '7, Indiranagar 100ft Road, Bengaluru' },
+                                    { name: 'Linda Wu', role: 'Specialist', specialty: 'Street Lighting', photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150', status: 'On Duty', phone: '+91 90081 23456', address: '5, Whitefield Main Road, Bengaluru' }
                                 ]
                             },
                             {
                                 category: 'Road Maintenance',
                                 workers: [
-                                    { name: 'David Miller', role: 'Foreman', specialty: 'Asphalt Paving', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150', status: 'Active' },
-                                    { name: 'Emma Wilson', role: 'Inspector', specialty: 'Structural Integrity', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150', status: 'On Duty' }
+                                    { name: 'David Miller', role: 'Foreman', specialty: 'Asphalt Paving', photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150', status: 'Active', phone: '+91 80121 78901', address: '33, Koramangala Block 5, Bengaluru' },
+                                    { name: 'Emma Wilson', role: 'Inspector', specialty: 'Structural Integrity', photo: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=150', status: 'On Duty', phone: '+91 96321 34567', address: '10, HSR Layout Sector 3, Bengaluru' }
                                 ]
                             },
                             {
                                 category: 'Water & Sewage',
                                 workers: [
-                                    { name: 'Robert King', role: 'Plumbing Expert', specialty: 'Pipe Networks', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150', status: 'Active' },
-                                    { name: 'Karen Lee', role: 'Drainage Tech', specialty: 'Stormwater Management', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150', status: 'On Duty' }
+                                    { name: 'Robert King', role: 'Plumbing Expert', specialty: 'Pipe Networks', photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150', status: 'Active', phone: '+91 91234 56789', address: '8, Malleshwaram Circle, Bengaluru' },
+                                    { name: 'Karen Lee', role: 'Drainage Tech', specialty: 'Stormwater Management', photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150', status: 'On Duty', phone: '+91 88901 23456', address: '22, JP Nagar 6th Phase, Bengaluru' }
                                 ]
                             }
                         ].map((cat, idx) => (
@@ -295,7 +293,9 @@ const AdminDashboard = ({ issues, setIssues, addNotification }) => {
                                             <img src={worker.photo} alt={worker.name} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '2px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
                                             <div style={{ flex: 1 }}>
                                                 <p style={{ fontSize: '0.85rem', fontWeight: 'bold', margin: 0 }}>{worker.name}</p>
-                                                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: 0 }}>{worker.role} • {worker.specialty}</p>
+                                                <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', margin: '1px 0' }}>{worker.role} • {worker.specialty}</p>
+                                                {worker.phone && <p style={{ fontSize: '0.68rem', color: 'var(--text-muted)', margin: '1px 0' }}>📞 {worker.phone}</p>}
+                                                {worker.address && <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: 0 }}>📍 {worker.address}</p>}
                                             </div>
                                             <span style={{
                                                 fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px',

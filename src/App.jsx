@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -27,11 +27,100 @@ const AdminRoute = ({ children, isAuthenticated, role }) => {
   return children;
 };
 
+// Load saved profile from localStorage
+const loadSavedProfile = () => {
+  try {
+    const saved = localStorage.getItem('userProfile');
+    if (saved) return JSON.parse(saved);
+  } catch (e) { }
+  return null;
+};
+
+const defaultUserStats = {
+  fullName: '',
+  email: '',
+  phone: '',
+  address: '',
+  photo: null,
+  points: 0,
+  rank: '#—',
+  streak: '0 Days',
+  history: [],
+  badges: []
+};
+
 function App() {
+  // ── All state declarations FIRST ──────────────────────────────────────────
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || null);
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('userRole'));
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
+  const [issues, setIssues] = useState([
+    {
+      id: 1,
+      user: 'Ravi Kumar',
+      image: '/pothole.jpg',
+      description: 'Severe puddle-filled pothole on the city bridge. Critical risk for commuters and vehicle alignment.',
+      time: '2 hours ago',
+      postedDate: '20 Feb 2026',
+      location: 'Miyapur Main Road, Hyderabad',
+      coordinates: { lat: 17.4948, lng: 78.3448 },
+      verified: true,
+      likes: 24,
+      likedBy: [],
+      status: 'Verified',
+      address: 'Near Miyapur Metro Station, Hyderabad',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null,
+      category: 'Pothole',
+      categoryIcon: '🚧',
+      aiConfidence: 89
+    },
+    {
+      id: 2,
+      user: 'Anita S.',
+      image: '/streetlight.jfif',
+      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
+      time: '5 hours ago',
+      postedDate: '20 Feb 2026',
+      location: 'Indiranagar 100ft Road, Bengaluru',
+      coordinates: { lat: 12.9784, lng: 77.6408 },
+      verified: false,
+      likes: 12,
+      likedBy: [],
+      status: 'Pending',
+      address: 'Opposite Toit Brewpub, Indiranagar',
+      acceptedBy: null,
+      solvedBy: null,
+      solvedDate: null,
+      category: 'Infrastructure',
+      categoryIcon: '💡',
+      aiConfidence: 94
+    }
+  ]);
+
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: 'Nearby Issue Alert',
+      message: 'A new issue has been posted within 4km of your location.',
+      time: '10 mins ago',
+      type: 'verify',
+      postId: 2,
+      unread: true
+    }
+  ]);
+
+  const [userStats, setUserStats] = useState(() => {
+    return loadSavedProfile() || defaultUserStats;
+  });
+
+  // ── Refs ───────────────────────────────────────────────────────────────────
+  const channelRef = useRef(null);
+  const ignoreNextBroadcast = useRef(false);
+
+  // ── Effects ───────────────────────────────────────────────────────────────
   useEffect(() => {
     if (theme === 'dark') {
       document.body.classList.add('dark-mode');
@@ -41,41 +130,7 @@ function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
-  const handleLogin = (role, userData) => {
-    setUserRole(role);
-    setIsAuthenticated(true);
-    localStorage.setItem('userRole', role);
-    if (userData) {
-      setUserStats(prev => ({
-        ...prev,
-        fullName: userData.fullName || prev.fullName,
-        email: userData.email || prev.email,
-        phone: userData.phone || prev.phone,
-        address: userData.address || prev.address
-      }));
-    }
-
-    // Redirect new users to onboarding
-    const onboardingComplete = localStorage.getItem('onboardingComplete');
-    if (!onboardingComplete && role !== 'admin') {
-      navigate('/onboarding');
-    }
-  };
-
-  const handleLogout = () => {
-    setUserRole(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('userRole');
-  };
-
-  // --- BroadcastChannel for real-time cross-tab sync ---
-  const channelRef = useRef(null);
-  const ignoreNextBroadcast = useRef(false);
-
+  // BroadcastChannel setup for cross-tab real-time sync
   useEffect(() => {
     const channel = new BroadcastChannel('civicflow_sync');
     channelRef.current = channel;
@@ -99,7 +154,7 @@ function App() {
     return () => channel.close();
   }, []);
 
-  // Broadcast issues whenever they change (skip if update came from another tab)
+  // Broadcast issues to other tabs whenever they change
   useEffect(() => {
     if (ignoreNextBroadcast.current) {
       ignoreNextBroadcast.current = false;
@@ -109,139 +164,6 @@ function App() {
       channelRef.current.postMessage({ type: 'ISSUES_UPDATE', payload: issues });
     }
   }, [issues]);
-  const [issues, setIssues] = useState([
-    {
-      id: 1,
-      user: 'Ravi Kumar',
-      image: '/pothole.jpg', // Local User Image
-      description: 'Severe puddle-filled pothole on the city bridge. Critical risk for commuters and vehicle alignment.',
-      time: '2 hours ago',
-      postedDate: '20 Feb 2026',
-      location: 'Main Street Bridge',
-      coordinates: { lat: 12.9716, lng: 77.5946 },
-      verified: true,
-      likes: 24,
-      likedBy: [],
-      status: 'Verified',
-      address: 'Near Central Bridge Entrance',
-      acceptedBy: null,
-      solvedBy: null,
-      solvedDate: null,
-      category: 'Pothole',
-      categoryIcon: '🚧',
-      aiConfidence: 89
-    },
-    {
-      id: 2,
-      user: 'Anita S.',
-      image: '/streetlight.jfif', // User's specific local file
-      description: 'Single streetlight silhouette failing at dusk. The entire walkway is dangerously dark for residents.',
-      time: '5 hours ago',
-      postedDate: '20 Feb 2026',
-      location: 'Sector 4, Greenfield',
-      coordinates: { lat: 12.9800, lng: 77.6000 },
-      verified: false,
-      likes: 12,
-      likedBy: [],
-      status: 'Pending',
-      address: 'Lane 5, Greenfield Road',
-      acceptedBy: null,
-      solvedBy: null,
-      solvedDate: null,
-      category: 'Infrastructure',
-      categoryIcon: '💡',
-      aiConfidence: 94
-    }
-  ]);
-
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: 'Nearby Issue Alert',
-      message: 'A new issue has been posted within 4km of your location.',
-      time: '10 mins ago',
-      type: 'verify',
-      postId: 2,
-      unread: true
-    }
-  ]);
-
-  const [userStats, setUserStats] = useState({
-    fullName: 'Santhosh Kumar',
-    email: 'santhosh@civicflow.gov',
-    phone: '+91 98765 43210',
-    address: '123 Civic Lane, Downtown Metro',
-    photo: null,
-    points: 450,
-    rank: '#8',
-    streak: '5 Days',
-    history: [
-      { id: 101, action: 'Solved Drainage Issue', date: '20 Feb 2026', points: 150 },
-      { id: 102, action: 'Verified Street Light', date: '18 Feb 2026', points: 50 }
-    ],
-    badges: [
-      { id: 1, name: 'Civic Hero', tier: 'Gold' },
-      { id: 2, name: 'First Responder', tier: 'Silver' }
-    ]
-  });
-
-  // Calculate dynamic stats for the user
-  const dynamicStats = React.useMemo(() => {
-    return {
-      postedCount: issues.filter(i => i.user === 'You').length,
-      acceptedCount: issues.filter(i => i.acceptedBy === 'You' && i.status === 'In Progress').length,
-      solvedCount: issues.filter(i => (i.solvedBy === 'Santhosh Kumar' || i.acceptedBy === 'You') && i.status === 'Solved').length
-    };
-  }, [issues]);
-
-  const fullUserStats = { ...userStats, ...dynamicStats };
-
-  const updateIssueStatus = (id, newStatus, extra = {}) => {
-    setIssues(prev => prev.map(issue => {
-      if (issue.id === id) {
-        const updated = { ...issue, status: newStatus, ...extra };
-
-        if (newStatus === 'In Progress') {
-          updated.acceptedAt = Date.now();
-          addNotification({
-            title: 'Task Accepted!',
-            message: `You accepted: ${issue.description.substring(0, 30)}... You have ${FIXED_TIMEOUT_MS / 60000} min to fix it.`,
-            type: 'update',
-            postId: id
-          });
-        }
-
-        if (newStatus === 'Fixed') {
-          updated.acceptedAt = null; // stop the timer
-          addNotification({
-            title: 'Fix Reported ✅',
-            message: 'Waiting for admin confirmation to mark as Solved.',
-            type: 'confirm',
-            postId: id
-          });
-        }
-
-        if (newStatus === 'Solved') {
-          updated.acceptedAt = null;
-          addNotification({
-            title: 'Issue Solved! 🏆',
-            message: `The community has confirmed the fix for: ${issue.description.substring(0, 30)}`,
-            type: 'confirm',
-            postId: id
-          });
-          if (updated.solvedBy === 'Santhosh Kumar' || updated.acceptedBy === 'You') {
-            setUserStats(prev => ({
-              ...prev,
-              points: prev.points + 150,
-              history: [{ id: Date.now(), action: `Solved: ${issue.description.substring(0, 20)}...`, date: 'Today', points: 150 }, ...prev.history]
-            }));
-          }
-        }
-        return updated;
-      }
-      return issue;
-    }));
-  };
 
   // Auto-revert "In Progress" issues to Pending if not fixed in time
   useEffect(() => {
@@ -270,6 +192,53 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  // ── Derived State ─────────────────────────────────────────────────────────
+  const dynamicStats = useMemo(() => {
+    const myIssues = issues.filter(i => i.user === 'You');
+    const mySolvedIssues = issues.filter(i =>
+      (i.acceptedBy === 'You') && i.status === 'Solved'
+    );
+    const dynamicPoints = myIssues.length * 50 + mySolvedIssues.length * 150 + (userStats.history || []).reduce((sum, h) => sum + (h.points || 0), 0);
+    return {
+      postedCount: myIssues.length,
+      acceptedCount: issues.filter(i => i.acceptedBy === 'You' && i.status === 'In Progress').length,
+      solvedCount: mySolvedIssues.length,
+      points: Math.max(userStats.points || 0, dynamicPoints)
+    };
+  }, [issues, userStats.points, userStats.history]);
+
+  const fullUserStats = { ...userStats, ...dynamicStats };
+
+  // ── Handlers ──────────────────────────────────────────────────────────────
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLogin = (role, userData) => {
+    setUserRole(role);
+    setIsAuthenticated(true);
+    localStorage.setItem('userRole', role);
+    if (userData) {
+      const savedProfile = loadSavedProfile();
+      const mergedProfile = {
+        ...defaultUserStats,
+        ...(savedProfile && savedProfile.email === userData.email ? savedProfile : {}),
+        fullName: userData.fullName || savedProfile?.fullName || '',
+        email: userData.email || '',
+        phone: userData.phone || savedProfile?.phone || '',
+        address: savedProfile?.address || '',
+      };
+      setUserStats(mergedProfile);
+      localStorage.setItem('userProfile', JSON.stringify(mergedProfile));
+    }
+  };
+
+  const handleLogout = () => {
+    setUserRole(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('userRole');
+  };
+
   const addNotification = (notif) => {
     setNotifications(prev => [{
       id: Date.now(),
@@ -279,6 +248,58 @@ function App() {
     }, ...prev]);
   };
 
+  const updateIssueStatus = (id, newStatus, extra = {}) => {
+    setIssues(prev => prev.map(issue => {
+      if (issue.id === id) {
+        const updated = { ...issue, status: newStatus, ...extra };
+
+        if (newStatus === 'In Progress') {
+          updated.acceptedAt = Date.now();
+          addNotification({
+            title: 'Task Accepted!',
+            message: `You accepted: "${issue.description.substring(0, 50)}..." You have ${FIXED_TIMEOUT_MS / 60000} min to fix it.`,
+            type: 'update',
+            postId: id
+          });
+        }
+
+        if (newStatus === 'Fixed') {
+          updated.acceptedAt = null;
+          addNotification({
+            title: 'Fix Reported ✅',
+            message: `Your fix for "${issue.description.substring(0, 40)}..." is waiting for admin confirmation.`,
+            type: 'confirm',
+            postId: id
+          });
+        }
+
+        if (newStatus === 'Solved') {
+          updated.acceptedAt = null;
+          addNotification({
+            title: 'Issue Solved! 🏆',
+            message: `The community has confirmed the fix for: "${issue.description.substring(0, 50)}..."`,
+            type: 'confirm',
+            postId: id
+          });
+          if (updated.acceptedBy === 'You') {
+            setUserStats(prev => {
+              const updated2 = {
+                ...prev,
+                points: (prev.points || 0) + 150,
+                history: [{ id: Date.now(), action: `Solved: "${issue.description.substring(0, 30)}..."`, date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }), points: 150 }, ...(prev.history || [])]
+              };
+              localStorage.setItem('userProfile', JSON.stringify(updated2));
+              return updated2;
+            });
+          }
+        }
+        return updated;
+      }
+      return issue;
+    }));
+  };
+
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <Router>
       <Routes>
@@ -291,7 +312,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Protected Resident Routes */}
         <Route path="/dashboard" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
             <Dashboard
@@ -317,7 +337,7 @@ function App() {
         } />
         <Route path="/rewards" element={
           <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Rewards user={fullUserStats} theme={theme} toggleTheme={toggleTheme} />
+            <Rewards user={fullUserStats} issues={issues} theme={theme} toggleTheme={toggleTheme} />
           </ProtectedRoute>
         } />
         <Route path="/notifications" element={
@@ -331,7 +351,6 @@ function App() {
           </ProtectedRoute>
         } />
 
-        {/* Admin Only Route */}
         <Route path="/admin" element={
           <AdminRoute isAuthenticated={isAuthenticated} role={userRole}>
             <AdminDashboard issues={issues} setIssues={setIssues} addNotification={addNotification} />

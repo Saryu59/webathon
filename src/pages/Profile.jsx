@@ -14,13 +14,15 @@ const Profile = ({ user, setUser, onLogout, theme, toggleTheme }) => {
     });
 
     const handleSaveSettings = () => {
-        setUser(prev => ({
-            ...prev,
+        const updated = {
+            ...user,
             fullName: editForm.fullName,
             email: editForm.email,
             phone: editForm.phone,
             address: editForm.address
-        }));
+        };
+        setUser(updated);
+        localStorage.setItem('userProfile', JSON.stringify(updated));
         setShowSettings(false);
     };
 

@@ -36,7 +36,8 @@ const LoginPage = ({ onLogin }) => {
 
                 if (user) {
                     onLogin(user.role || 'user', user);
-                    navigate('/dashboard');
+                    const onboardingComplete = localStorage.getItem('onboardingComplete');
+                    navigate(onboardingComplete ? '/dashboard' : '/onboarding');
                 } else {
                     setError('Invalid email or password. Please register an account if you haven’t already.');
                 }
@@ -267,3 +268,4 @@ const LoginPage = ({ onLogin }) => {
 };
 
 export default LoginPage;
+
